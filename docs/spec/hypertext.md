@@ -123,7 +123,7 @@ The anchor end only needs enough of the ID from the anchor start to be unambiguo
 
 ##### Overlapping anchors
 
-Unlike HTML, anchors in intent do not need to nest cleanly; they can overlap. The following is legal, but requires anchor pairs with at least partial IDs in the anchor ends to make the intent clear:
+Unlike HTML, anchors in intent do not need to nest cleanly; they can overlap. The following is legal intent code, but requires anchor pairs with at least partial IDs in the anchor ends to make the intent clear:
 
 ![overlapping anchors](../collateral/overlapping-anchors.png)
 
