@@ -4,6 +4,6 @@ Creating software is getting [more complex and harder](need.md). Tools are impro
 
 Intent is a programming language &mdash ;and ecosystem &mdash; that's teaming with next-gen [features](key-features.md) &mdash; but what really [differentiates](positioning.md) it is its [compass](compass.md), which is laser-focused on people and their whys. You'll be amazed what a difference that makes.
 
-Join our community and comment on our spec or features. Let's raise the bar for the entire industry, and unleash creativity and fun along the way.
+Join our community or [contribute](contribute.md) to our [spec](spec/) or features. Let's raise the bar for the entire industry, and unleash creativity and fun along the way.
 
-[[spec](spec/) | [contribute](contribute.md) | [logo](logo.md) | [hypertext](spec/hypertext.md) ]
+[ [logo](logo.md) &vert; [hypertext](spec/hypertext.md) ]
