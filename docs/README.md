@@ -8,4 +8,4 @@ Intent is a programming language--and ecosystem--that's teaming with next-gen fe
 
 Join our community and comment on our spec or features. Let's raise the bar for the entire industry, and unleash creativity and fun along the way.
 
-[[hyperlinks](spec/hyperlinks.md)]
+[[hypertext](spec/hypertext.md)]
