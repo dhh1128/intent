@@ -33,7 +33,7 @@ and the physiological processes of the body.
 
 __Anchor text__ like "Magnetic resonance imaging" is intended to be displayed inline with the text that surrounds it -- probably un-stylized. Enclosing it in square brackets simply creates a region of the text that can be pointed to.
 
-![simple text anchors](collateral/simple-text-anchors.png)
+![simple text anchors](../collateral/simple-text-anchors.png)
 
 #### Anchor IDs
 
@@ -41,7 +41,7 @@ Each anchor defines an __anchor ID__. This is a short, memorable string that uni
 
 ##### Implicit anchor IDs
 
-The easiest way to define the ID of an anchor is to leave it implicit -- let it be calculated automatically from the anchor text itself. This is what happens with the simple square bracket notation described in the MRI example above; the ID for "MRI" is "MRI", too. Or close enough. (See [Comparing anchor IDs below for more](#comparing-anchor-ids).)
+The easiest way to define the ID of an anchor is to leave it implicit -- let it be calculated automatically from the anchor text itself. This is what happens with the simple square bracket notation in the MRI example above; the ID for "MRI" is "MRI", too. Or close enough. (See [Comparing anchor IDs below for more](#comparing-anchor-ids).)
 
 ##### Explicit anchor IDs
 
