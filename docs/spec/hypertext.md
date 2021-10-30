@@ -129,7 +129,7 @@ Unlike HTML, anchors in intent do not need to nest cleanly; they can overlap. Th
 
 ##### Disjoint anchors
 
-Intent also supports anchors that encompass multiple, discontinuous stretches of content as a virtual unit. For example, suppose an English teacher wanted to illustrate the rhyme scheme in Shakespeare's sonnet. She might highlight the endings of multiple lines as part of a single disjoint anchor; when she later links to such an anchor, she can then point to the disconnected lines as a unit (e.g., the red lines here):
+Intent also supports anchors that encompass multiple, separate stretches of content as a single composite unit. For example, suppose an English teacher wants to illustrate the rhyme scheme in Shakespeare's sonnet. She might define the endings of rhyming lines to be part of a single __disjoint anchor__. When she later links to such an anchor, she is able to point to all items that share a common anchor ID as a unit. In the following example, she could point to the red lines, the blue lines, or the green lines as link targets:
 
 ![disjoint anchors](../collateral/disjoint-anchors.png)
 
@@ -143,7 +143,6 @@ From sullen earth, sings hymns at heaven’s [b:gate];
 For thy sweet love remember’d such wealth [c:brings]
 That then I scorn to change my state with [c+:kings].
 ```
-
 
 ### Hyperlinks
 
