@@ -21,4 +21,4 @@ Need UI?
 
 Need hardcore? Are you building air traffic control, an embedded robotics OS, distributed supercomputers, nuclear power plant regulators, cooperative routing and realtime collision avoidance for a city worth of cars, or a lunar spaceport?
 
->Try Intent! (instead of Kotlin, Rust, Java, Go, C++, Scala, Erlang, D, Ada, Eiffel...)
+>Try Intent! ([instead of](other-approaches.md) Kotlin, Rust, Java, Go, C++, Scala, Erlang, D, Ada, Eiffel...)
