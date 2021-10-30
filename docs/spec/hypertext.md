@@ -31,7 +31,7 @@ technique used in radiology to form pictures of the anatomy
 and the physiological processes of the body.
 ```
 
-__Anchor text__ like "Magnetic resonance imaging" is intended to be displayed inline with the text that surrounds it -- probably un-stylized. Enclosing it in square brackets simply creates a region of the text that can be pointed to.
+__Anchor text__ like "Magnetic resonance imaging" is intended to be displayed inline with the text that surrounds it -- probably un-stylized. Enclosing it in square brackets simply creates a region of the text that can be pointed to:
 
 ![simple text anchors](../collateral/simple-text-anchors.png)
 
