@@ -33,7 +33,7 @@ and the physiological processes of the body.
 
 __Anchor text__ like "Magnetic resonance imaging" is intended to be displayed inline with the text that surrounds it -- probably un-stylized. Enclosing it in square brackets simply creates a region of the text that can be pointed to:
 
-![simple text anchors](../collateral/simple-text-anchors.png)
+![simple text anchors](../assets/simple-text-anchors.png)
 
 #### Anchor IDs
 
@@ -125,13 +125,13 @@ The anchor end only needs enough of the ID from the anchor start to be unambiguo
 
 Unlike HTML, anchors in intent do not need to nest cleanly; they can overlap. The following is legal intent code, but requires anchor pairs with at least partial IDs in the anchor ends to make the intent clear:
 
-![overlapping anchors](../collateral/overlapping-anchors.png)
+![overlapping anchors](../assets/overlapping-anchors.png)
 
 ##### Disjoint anchors
 
 Intent also supports anchors that encompass multiple, separate stretches of content as a single composite unit. For example, suppose an English teacher wants to illustrate the rhyme scheme in Shakespeare's sonnet. She might define the endings of rhyming lines to be part of a single __disjoint anchor__. When she later links to such an anchor, she is able to point to all items that share a common anchor ID as a unit. In the following example, she could point to the red lines, the blue lines, or the green lines as link targets:
 
-![disjoint anchors](../collateral/disjoint-anchors.png)
+![disjoint anchors](../assets/disjoint-anchors.png)
 
 To define disjoint anchors in intent, use any anchor style(s) with an explicit id, and append a `+` char to at least one instance of the shared anchor ID:
 
@@ -172,7 +172,7 @@ Hyperlinks also support a paired variant that follows the same rules as anchors:
 
 ## Interjections
 
-An interjection is a way of managing linked content where it is convenient to create and maintain it, but displaying it somewhere else. Interjections are intent's way of dealing with things like footnotes, endnotes, callouts, and similar collateral. In an editor, iterjections are defined inline: inside, next to, or near the content they enhance, in an editor. However, they may be rendered in an entirely different place, such as a footer, an appendix, etc.
+An interjection is a way of managing linked content where it is convenient to create and maintain it, but displaying it somewhere else. Interjections are intent's way of dealing with things like footnotes, endnotes, callouts, and similar assets. In an editor, iterjections are defined inline: inside, next to, or near the content they enhance, in an editor. However, they may be rendered in an entirely different place, such as a footer, an appendix, etc.
 
 An interjection may have one or more __display points__ where its content or some subset or transformation thereof is rendered. 
 

@@ -1,6 +1,6 @@
 # intent
 
-[![](collateral/intent-logo-transparent-128.png)](logo.md)
+[![](assets/intent-logo-transparent-128.png)](logo.md)
 
 Creating software is getting [more complex and harder](need.md). Tools are improving... but too slowly. Other approaches treat [the "why" of code](why.md)&mdash;its *intent* &mdash; as an external, human concern.
 

@@ -2,7 +2,7 @@
 
 The logo for the intent programming ecosystem is the "fractal fan."
 
-![](collateral/intent-logo.png)
+![](assets/intent-logo.png)
 
 It builds from an easy shape--a balanced, golden-mean triangle--replicated simply but with care. It suggests:
 
