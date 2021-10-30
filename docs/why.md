@@ -1,6 +1,13 @@
-# Why
+# When "why" is missing
 
-Intent is the software artisan’s choice when stakes are high. It empowers fearless and disciplined creativity to tame the most demanding compute problems, thus making tomorrow’s world better for everyone.
+How many times have you…
 
-[[compass](compass.md)] (Intent's guiding values) | [[positioning](positioning.md)] (Intent's sweet spot--and areas where it doesn't claim to be optimal)
+* Been surprised by new requirements?
+* Begged for design docs to clarify inherited code?
+* Written comments but feared someone would miss a subtlety?
+* Struggled to grok a messy state machine or tangle of threads?
+* Sanitized input to a function, unable to trust preconditions?
+* Wondered if coders cared at all about the user experience?
+* Felt a communication gap between execs/sales/PM/dev/PS?
 
+All of these experiences are symptoms that the *why* of software development &mdash; its *intent* &mdash; is missing or unclear.

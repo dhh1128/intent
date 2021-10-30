@@ -133,15 +133,15 @@ Intent also supports anchors that encompass multiple, discontinuous stretches of
 
 ![disjoint anchors](../collateral/disjoint-anchors.png)
 
-To define disjoint anchors in intent, use one of the anchor forms that [explicit ID syntax](#explicit-id-syntax) or  append a `+` char to at least one instance of the shared anchor ID. This can be done with simple anchor ID. As long as one instance of thebegins with a his corresponds to the following intent syntax:
+To define disjoint anchors in intent, use any anchor style(s) with an explicit id, and append a `+` char to at least one instance of the shared anchor ID:
 
 ```i
-Yet in these thoughts myself almost desp[a+ising,
-Haply I think on thee, and then my state,
-Like to the lark at break of day arising
-From sullen earth, sings hymns at heaven’s gate;
-For thy sweet love remember’d such wealth brings
-That then I scorn to change my state with kings.
+Yet in these thoughts myself almost desp[a+:ising],
+Haply I think on thee, and then my [b+ ...]state[/],
+Like to the lark at break of day ar[a ...]ising[/]
+From sullen earth, sings hymns at heaven’s [b:gate];
+For thy sweet love remember’d such wealth [c:brings]
+That then I scorn to change my state with [c+:kings].
 ```
 
 
