@@ -12,4 +12,4 @@ Within the bounds of a context-free grammar, programmers can use lousy names, ho
 
 We need something better.
 
-We need a paradigm that elevates people to a primary concern, and that answers the overriding question that makes our thinking so very un-machine-like: Why? What is the intent?
+We need a paradigm that elevates people to a primary concern, and that answers the overriding question that makes our thinking so very un-machine-like: *Why*? What is the intent?

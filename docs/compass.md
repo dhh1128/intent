@@ -1,5 +1,7 @@
 # Compass
 
+Intent is crucial.
+
 People are the heart of software.
 
 Clarity pays off.

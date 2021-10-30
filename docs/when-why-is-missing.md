@@ -10,4 +10,4 @@ How many times have you…
 * Wondered if coders cared at all about the user experience?
 * Felt a communication gap between execs/sales/PM/dev/PS?
 
-All of these experiences are symptoms that the why of software development--its intent--is missing or unclear.
+All of these experiences are symptoms that the *why* of software development--its intent--is missing or unclear.

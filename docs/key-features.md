@@ -1,6 +1,6 @@
 # Key Features
 
-Intent is a programming language with a hybrid paradigm that incorporates the best of imperative, functional, and declarative approaches. It is object-oriented, type-safe, concurrency-savvy, and general-purpose. It can call C libraries (.so, .dll) as well as java and other JVM-based languages. Intent compiles down to native binaries for C-like performance, or it can be translated to JVM byte code, python, C++ 11, or other high-level syntaxes.
+Intent is a programming language with a hybrid paradigm that incorporates the best of imperative, functional, and declarative approaches. It is object-oriented, type-safe, concurrency-savvy, and general-purpose. It can call C libraries (.so, .dll, .dylib) as well as java and other JVM-based languages. Intent compiles down to native binaries for C-like performance, or it can be translated to JVM byte code, python, C++ 11, or other high-level syntaxes.
 
 ## Unique
 
