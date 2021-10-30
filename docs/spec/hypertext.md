@@ -1,5 +1,3 @@
-# Spec
-
 ## Hypertext
 
 Intent is a powerful hypertext format. It promotes what linguists call __deixis__ -- pointing with language.
