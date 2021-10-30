@@ -6,5 +6,5 @@ header.page-header {
     background-image: url(/intent/assets/intent-logo-transparent-128.png), linear-gradient(
 120deg, #155799, #159957);
     background-repeat: no-repeat;
-    background-position: left bottom;
+    background-position: left center;
 }
