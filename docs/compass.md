@@ -1,4 +1,6 @@
-# Compass
+# intent
+
+## Compass
 
 Intent is crucial.
 

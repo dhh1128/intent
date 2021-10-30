@@ -1,10 +1,12 @@
-# Hypertext
+# Spec
+
+## Hypertext
 
 Intent is a powerful hypertext format. It promotes what linguists call __deixis__ -- pointing with language.
 
 Intent supports all of the linking constructs that HTML has popularized, plus some advanced features offered by word processors and desktop publishing software, plus some features that are unique.
 
-## TL;DR
+### TL;DR
 
 element | syntax
 --- | ---
@@ -16,7 +18,6 @@ element | syntax
 [anchors for media and other complex content](#anchor-pairs) | `[id ...]`content`[/]`. Unlike HTML, overlapping anchors are supported.
 [dijoint anchors](#disjoint-anchors) | `[id+:anchor text]` and/or `[id+ ...]`content`[/]` in any combination; only one needs to have `+` after the `id`
 
-## Details
 ### Anchors
 
 An anchor is a target for a hyperlink -- something we can point *at*. It may be a word or phrase, a location, a visual artifact, or any other type of intent content.

@@ -1,4 +1,5 @@
-# Other approaches
+# intent
+## Other approaches
 
 Most modern programming languages are imperative. As a rough approximation, we can say that they focus on telling a computer what to do. When you read code in Assembly, Java, C#, C++, D, Python, Ruby, PHP, VB, ActionScript, JavaScript, Ada, Eiffel, shell scripts, or even Excel macros, you mostly see sequences of instructions that the program follows as it executes. Object-oriented programming encapsulates state and provides convenient abstractions, but it largely adopts this paradigm.
 

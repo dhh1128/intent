@@ -1,8 +1,9 @@
-# Key Features
+# intent
+## Key Features
 
 Intent is a programming language with a hybrid paradigm that incorporates the best of imperative, functional, and declarative approaches. It is object-oriented, type-safe, concurrency-savvy, and [general-purpose (but systems- rather than UI-focused)](positioning.md). It can call C libraries (.so, .dll, .dylib) as well as java and other JVM-based languages. Intent compiles down to native binaries for C-like performance, or it can be translated to JVM byte code, python, C++ 11, or other high-level syntaxes.
 
-## Unique
+### Unique
 
 feature | comment
 --- | ---
@@ -21,7 +22,7 @@ problems and circuit-breakers | Allows declaration of conditions that should tri
 optional garbage collection | By default, uses deterministic destructors and an RAII style of resource management. However, can be translated to a GC world for interop with java and similar environments. [more]
 semantic interface compatibility | Can test for compatible interface overlap instead of exact interface versions. [more]
 
-## Familiar but cool
+### Familiar but cool
 
 feature | comment
 --- | ---

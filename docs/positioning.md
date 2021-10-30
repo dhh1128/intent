@@ -1,4 +1,5 @@
-# Positioning
+# intent
+## Positioning
 
 Intent's sweet spot:
 

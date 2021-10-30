@@ -1,4 +1,5 @@
-# The need for intent
+# intent
+## The need for intent
 
 Since the early 1980s (when C++ was invented and personal computers became available), waves of innovation have [complicated the hardware, software, and human landscape](https://alarmingdevelopment.org/?p=865) in which software development takes place. Here's just a quick sample from the history of our exploding complexity (try to hum this to the tune of Billy Joel's "We Didn't Start the Fire"...):
 

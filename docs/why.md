@@ -1,4 +1,5 @@
-# When "why" is missing
+# intent
+## Why
 
 How many times have you…
 
