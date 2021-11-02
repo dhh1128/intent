@@ -1,0 +1,44 @@
+@startuml
+hide empty description
+
+[*] --> token: open [
+state token
+token: next_is (clickable)
+token: explicit ID (null)
+token: URL (null)
+token: params[] (empty)
+
+state pipe <<choice>>
+state at <<choice>>
+state c <<choice>>
+state d <<choice>>
+
+token --> [*]: close ]
+token --> at: @
+token --> closing: slash\nif 1st char
+token --> pipe: pipe
+token --> token: [a-z0-9]\nspace tab
+token --> explicit_id: colon
+
+ref: token.next_is = URL
+ref --> token
+ref --> param: semicolon
+
+closing --> [*]: close ]
+closing --> error: other
+
+error --> [*]
+
+explicit_id: push token as ID
+explicit_id --> token
+
+param: push param
+param --> token
+
+pipe --> error: else
+pipe --> token: next_is = URL\n(next_is=>clickable)
+at --> error: else
+at --> token: first char\n(next_is=>URL)
+
+
+@enduml

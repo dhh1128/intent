@@ -14,7 +14,7 @@ element | syntax
 [location anchor without content](#location-anchors) | `[id:]`
 [code anchors](#code-anchors) | automatic from structure; referenced with dotted notation
 [anchors for media and other complex content](#anchor-pairs) | `[id ...]`content`[/]`. Unlike HTML, overlapping anchors are supported.
-[dijoint anchors](#disjoint-anchors) | `[id+:anchor text]` and/or `[id+ ...]`content`[/]` in any combination; only one needs to have `+` after the `id`
+[disjoint anchors](#disjoint-anchors) | `[id+:anchor text]` and/or `[id+ ...]`content`[/]` in any combination; only one needs to have `+` after the `id`
 
 ### Anchors
 
