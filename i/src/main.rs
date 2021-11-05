@@ -1,3 +1,5 @@
+use colored::*;
+
 fn main() {
-    println!("Hello, world!");
+    println!("{} {} !", "it".green(), "works".blue().bold());
 }
