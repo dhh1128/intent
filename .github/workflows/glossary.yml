@@ -1,4 +1,4 @@
-name: tt Run and Publish
+name: update glossary
 
 # Controls when the workflow will run
 on:
@@ -13,7 +13,7 @@ on:
         description: glossaryDefFile
       deployBranch:
         required: false
-        default: gloss
+        default: main
         description: This is where the output of script will be pushed to.
 
 
@@ -33,7 +33,7 @@ jobs:
       - name: Set variables
         env:
           DEFAULT_GLOSSARY_DEF_FILE: glossary.json
-          DEFAULT_DEPLOY_BRANCH: gloss
+          DEFAULT_DEPLOY_BRANCH: main
         run: |
           echo "GLOSSARY_DEF_FILE=${{ github.event.inputs.glossaryDefFile || env.DEFAULT_GLOSSARY_DEF_FILE }}" >> $GITHUB_ENV
           echo "DEPLOY_BRANCH=${{ github.event.inputs.deployBranch || env.DEFAULT_DEPLOY_BRANCH }}" >> $GITHUB_ENV
