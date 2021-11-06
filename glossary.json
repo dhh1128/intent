@@ -1,5 +1,6 @@
 {
-    "title": "Intent Glossary",
+    "frame": "https://raw.githubusercontent.com/dhh1128/intent/main/docs/assets/.glossary-template",
+    "write_meta": false,
     "sources": [
         { "wiki": "git@github.com:dhh1128/intent.git" }
     ]
