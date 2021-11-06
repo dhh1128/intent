@@ -474,62 +474,23 @@ a:hover {
 .page-header {
     color: #fff;
     text-align: center;
-    background-color: #159957;
-    background-image: linear-gradient(120deg, #155799, #159957);
-}
-@media screen and (min-width: 64em) {
-    .page-header {
-        padding: 5rem 6rem;
-    }
-}
-@media screen and (min-width: 42em) and (max-width: 64em) {
-    .page-header {
-        padding: 3rem 4rem;
-    }
-}
-@media screen and (max-width: 42em) {
-    .page-header {
-        padding: 2rem 1rem;
-    }
+    background-color: #155799;
+    background-image: url(/assets/logo-128.png), linear-gradient(120deg, #155799, #159957);
+    background-repeat: no-repeat;
+    background-position: left bottom;
+    padding: 1.5rem 2rem;
 }
 .project-name {
     margin-top: 0;
     margin-bottom: 0.1rem;
-}
-@media screen and (min-width: 64em) {
-    .project-name {
-        font-size: 3.25rem;
-    }
-}
-@media screen and (min-width: 42em) and (max-width: 64em) {
-    .project-name {
-        font-size: 2.25rem;
-    }
-}
-@media screen and (max-width: 42em) {
-    .project-name {
-        font-size: 1.75rem;
-    }
+    font-size: 1.75rem;
 }
 .project-tagline {
     margin-bottom: 2rem;
+    margin-block-start: 0.1em; margin-block-end: 0;
     font-weight: normal;
     opacity: 0.7;
-}
-@media screen and (min-width: 64em) {
-    .project-tagline {
-        font-size: 1.25rem;
-    }
-}
-@media screen and (min-width: 42em) and (max-width: 64em) {
-    .project-tagline {
-        font-size: 1.15rem;
-    }
-}
-@media screen and (max-width: 42em) {
-    .project-tagline {
-        font-size: 1rem;
-    }
+    font-size: 1rem;
 }
 .main-content {
     word-wrap: break-word;
@@ -731,13 +692,4 @@ a:hover {
 }
 
 footer { display: none }
-
 header > a.btn { display: none }
-header > h2.project-tagline { margin-block-start: 0.1em; margin-block-end: 0; }
-header.page-header {
-    padding: 1em 2em;
-    background-image: url(/assets/logo-128.png), linear-gradient(
-120deg, #155799, #159957);
-    background-repeat: no-repeat;
-    background-position: left center;
-}
