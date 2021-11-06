@@ -696,3 +696,4 @@ a:hover {
 footer { display: none; }
 header > a.btn { display: none; }
 body > nav { text-align: center; }
+dl > dt > span.tag { display: none; }
