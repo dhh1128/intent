@@ -38,13 +38,17 @@ jobs:
           echo "GLOSSARY_DEF_FILE=${{ github.event.inputs.glossaryDefFile || env.DEFAULT_GLOSSARY_DEF_FILE }}" >> $GITHUB_ENV
           echo "DEPLOY_BRANCH=${{ github.event.inputs.deployBranch || env.DEFAULT_DEPLOY_BRANCH }}" >> $GITHUB_ENV
       - name: Run script
-        run: ./tt/bin/tt glossary ${{ env.GLOSSARY_DEF_FILE }} >docs/glossary.html
+        run: |
+          ./tt/bin/tt glossary ${{ env.GLOSSARY_DEF_FILE }} >docs/glossary.html
+          cat docs/glossary.html
 
       - name: Publishing
         run: |
           git config --local user.email "${{ github.actor }}@users.noreply.github.com"
           git config --local user.name "${{ github.actor }}"
+          git status
           git add docs/glossary.html
+          git status
           git commit -s -m "auto-update glossary"
           git push -f https://${{ secrets.ACCESS_TOKEN }}@github.com/${{ github.repository}}.git main:${{ env.DEPLOY_BRANCH }}
           echo DONE
