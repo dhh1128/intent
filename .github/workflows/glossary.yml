@@ -43,6 +43,10 @@ jobs:
           git config --global core.pager cat
           git log -n 1
           rm docs/glossary.html
+          cat glossary.json
+          cd tt
+          git log -n 1
+          cd ..
           ./tt/bin/tt glossary ${{ env.GLOSSARY_DEF_FILE }} >docs/glossary.html
           cat docs/glossary.html
 
