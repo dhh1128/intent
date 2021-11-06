@@ -695,5 +695,11 @@ a:hover {
 
 footer { display: none; }
 header > a.btn { display: none; }
-body > nav { text-align: center; }
+body > nav {
+body > nav {
+    text-align: center;
+    width: 100%;
+    position: fixed;
+    background-color: #eee;
+}
 dl > dt > span.tag { display: none; }
