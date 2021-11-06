@@ -42,6 +42,7 @@ jobs:
         run: |
           git config --global core.pager cat
           git log -n 1
+          rm docs/glossary.html
           ./tt/bin/tt glossary ${{ env.GLOSSARY_DEF_FILE }} >docs/glossary.html
           cat docs/glossary.html
 
@@ -60,5 +61,6 @@ jobs:
         run: |
           # Stage the file, commit and push
           git add time.txt
+          git add docs/glossary.html
           git commit -m "new date commit"
           git push origin main
