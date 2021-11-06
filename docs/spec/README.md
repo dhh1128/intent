@@ -1,3 +1,24 @@
+# Spec
+
+## Introduction
+
+The Intent programming language combines two types of content that have different syntax:
+
+1. itext 
+2. icode
+
+Itext is a readable, flexible text format that has much in common with markdown.
+
+Icode has more in common with traditional source code.
+
+*Both* types of content have a dual audience: humans and compilers. Itext is more than simple commentary, and icode is more than machine-readable symbols. They are synergistic and intended to mix in a single document. Intent enforces some aspects of the relationship between the two (e.g., the integrity of hyperlinks, the semantics of marks).
+
+### Itext
+
+All intent 
+
+
+
 1.1 Hello, World
 The “Hello, World” problem domain is too simple to align nicely with intent's positioning, but in the interests of tradition, here is some code for illustration purposes:
 
