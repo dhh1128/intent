@@ -29,6 +29,7 @@ jobs:
         run: |
           git clone https://github.com/trustoverip/tt.git
           python -m pip install marko
+          python -m pip install requests
 
       - name: Set variables
         env:
