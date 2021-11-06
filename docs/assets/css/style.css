@@ -479,6 +479,8 @@ a:hover {
     background-repeat: no-repeat;
     background-position: left bottom;
     padding: 1.5rem 2rem;
+    position: sticky;
+    top: 0;
 }
 .project-name {
     margin-top: 0;
@@ -691,5 +693,6 @@ a:hover {
     color: #819198;
 }
 
-footer { display: none }
-header > a.btn { display: none }
+footer { display: none; }
+header > a.btn { display: none; }
+body > nav { text-align: center; }
