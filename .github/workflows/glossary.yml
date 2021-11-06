@@ -41,31 +41,15 @@ jobs:
 
       - name: Run script
         run: |
-          git config --global core.pager cat
-          git log -n 1
-          rm docs/glossary.html
-          cat glossary.json
-          cd tt
-          git log -n 1
-          cd ..
           ./tt/bin/tt glossary ${{ env.GLOSSARY_DEF_FILE }} >docs/glossary.html
-          cat docs/glossary.html
-
-      - name: save current date
-        run: |
-          # do some operation that changes a file in the git repo
-          date > time.txt
 
       - name: setup git config
         run: |
-          # setup the username and email. I tend to use 'GitHub Actions Bot' with no email by default
           git config user.name "GitHub Actions Bot"
           git config user.email "<>"
 
       - name: commit
         run: |
-          # Stage the file, commit and push
-          git add time.txt
           git add docs/glossary.html
-          git commit -m "new date commit"
-          git push origin main
+          git commit -m "auto-update glossary"
+          git push origin main:${{ env.DEPLOY_BRANCH }}
