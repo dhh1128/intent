@@ -1,5 +1,4 @@
-# intent
-## Why
+# Why
 
 How many times have you…
 
