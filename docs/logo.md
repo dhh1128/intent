@@ -1,4 +1,4 @@
-# Logo
+## Logo
 
 The logo for the intent developer ecosystem is the "fractal fan."
 
