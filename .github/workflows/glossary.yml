@@ -51,6 +51,6 @@ jobs:
           git status
           git add docs/glossary.html
           git status
-          git commit -s -m "auto-update glossary"
-          git push -f https://${{ secrets.ACCESS_TOKEN }}@github.com/${{ github.repository}}.git main:${{ env.DEPLOY_BRANCH }}
+          git commit -m "auto-update glossary"
+          git push -f origin ${{ env.DEPLOY_BRANCH }}
           echo DONE
