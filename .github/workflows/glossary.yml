@@ -2,7 +2,7 @@ name: tt Run and Publish
 
 # Controls when the workflow will run
 on:
-  push:
+  gollum:
     branches: [main]
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -38,18 +38,13 @@ jobs:
           echo "GLOSSARY_DEF_FILE=${{ github.event.inputs.glossaryDefFile || env.DEFAULT_GLOSSARY_DEF_FILE }}" >> $GITHUB_ENV
           echo "DEPLOY_BRANCH=${{ github.event.inputs.deployBranch || env.DEFAULT_DEPLOY_BRANCH }}" >> $GITHUB_ENV
       - name: Run script
-        run: ./tt/bin/tt glossary ${{ env.GLOSSARY_DEF_FILE }} >index.html
+        run: ./tt/bin/tt glossary ${{ env.GLOSSARY_DEF_FILE }} >docs/glossary.html
 
       - name: Publishing
         run: |
-          mkdir public
-          cp index.html public
-          cd public
-          git config --global init.defaultBranch main
-          git init
           git config --local user.email "${{ github.actor }}@users.noreply.github.com"
           git config --local user.name "${{ github.actor }}"
-          git add .
-          git commit -m "Add changes" -a
+          git add docs/glossary.html
+          git commit -s -m "auto-update glossary"
           git push -f https://${{ secrets.ACCESS_TOKEN }}@github.com/${{ github.repository}}.git main:${{ env.DEPLOY_BRANCH }}
           echo DONE
