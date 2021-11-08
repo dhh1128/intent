@@ -43,12 +43,12 @@ jobs:
         run: |
           ./tt/bin/tt glossary ${{ env.GLOSSARY_DEF_FILE }} >docs/glossary.html
 
-      - name: setup git config
+      - name: Setup git config
         run: |
           git config user.name "GitHub Actions Bot"
           git config user.email "<>"
 
-      - name: commit
+      - name: Commit
         run: |
           git add docs/glossary.html
           git commit -m "auto-update glossary"

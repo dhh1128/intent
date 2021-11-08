@@ -10,6 +10,6 @@ Against this juggernaut of change, the brains and creative energies of the entir
 
 But at best we've achieved a stalemate.
 
-Everywhere, we see steepening learning curves, fragmented information, nagging bugginess, a growing ratio of "grunt work" to creativity, and alarming divides between code, tests, and people.
+Everywhere, we see steepening learning curves, fragmented information, nagging bugginess, a growing ratio of "grunt work" to creativity, and alarming divides between code, tests, and people. Software development is getting more complex, and the complexity is a problem. [[1](https://redmonk.com/sogrady/2020/10/06/developer-experience-gap/), [2](https://www.infoworld.com/article/3639050/complexity-is-killing-software-developers.html), [3](https://www.simplethread.com/software-complexity-killing-us/), [4](https://www.computerworld.com/article/2513705/ozzie-s--doomsday--memo-warns-microsoft-of-post-pc-days.html), [5](https://codecraft.co/2013/07/25/features-are-not-chunks-of-code/), [6](https://www.youtube.com/watch?v=vWfkbGF6fiA), [7](https://en.wikipedia.org/wiki/List_of_failed_and_overbudget_custom_software_projects), [8](https://siliconangle.com/2021/09/29/devops-dummies-author-emily-freeman-introduces-revolutionary-model-modern-software-development-awsq3/)]
 
 We need a better way.
