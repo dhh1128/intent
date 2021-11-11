@@ -54,8 +54,8 @@
 </dd>
 
 <dt id="E" class="letter">E</td>
-<dt id="embedded-mode">embedded mode <span class="tag">#intent</span></dt>
-<dd><p>A variant of <a href="#iml-transformation" title="The process of converting IML to HTML.">IML transformation</a> that intends to produce output suitable for embedding in a containing website. To prevent <a href="https://owasp.org/www-community/attacks/xss/#">cross-site scripting (XSS)</a> and <a href="https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.469.7647&amp;rep=rep1&amp;type=pdf">scriptless attacks</a>, the output HTML is <a href="https://en.wikipedia.org/wiki/HTML_sanitization">sanitized</a> by removing various constructions (CSS, <code>&lt;style&gt;</code>, <code>&lt;script&gt;</code>, many HTML tag attributes...). Contrast <a href="#standalone-mode" title="A variant of IML transformation that intends to produce rich, self-contained documents.">standalone mode</a>.</p>
+<dt id="embeddable-mode">embeddable mode <span class="tag">#intent</span></dt>
+<dd><p>A variant of <a href="#iml-transformation" title="The process of converting IML to HTML.">IML transformation</a> that intends to produce output suitable for embedding in a containing website. To make the content consistent with container styling, style information is suppressed. To prevent <a href="https://owasp.org/www-community/attacks/xss/#">cross-site scripting (XSS)</a> and <a href="https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.469.7647&amp;rep=rep1&amp;type=pdf">scriptless attacks</a>, the output HTML is <a href="https://en.wikipedia.org/wiki/HTML_sanitization">sanitized</a> by removing various constructions (CSS, <code>&lt;style&gt;</code>, <code>&lt;script&gt;</code>, many HTML tag attributes...). Contrast <a href="#standalone-mode" title="A variant of IML transformation that intends to produce rich, self-contained documents.">standalone mode</a>. See also <a href="#natural-mode" title="The mode of IML transformation that's implied by the content of the document.">natural mode</a>.</p>
 </dd>
 
 <dt id="I" class="letter">I</td>
@@ -90,12 +90,12 @@
 
 <dt id="N" class="letter">N</td>
 <dt id="natural-mode">natural mode <span class="tag">#intent</span></dt>
-<dd><p>The mode of <a href="#iml-transformation" title="The process of converting IML to HTML.">IML transformation</a> that's implied by the content of the document. Documents that contain a <code>standalone prefix</code> or <code>standalone suffix</code> property, or that contain any HTML content that would be sanitized in <a href="#embeddable-mode">embeddable mode</a>, are naturally standalone. Documents that contain no content requiring sanitization are naturally embeddable.</p>
+<dd><p>The mode of <a href="#iml-transformation" title="The process of converting IML to HTML.">IML transformation</a> that's implied by the content of the document. Documents that contain a <code>standalone prefix</code> or <code>standalone suffix</code> property, or that contain any HTML content that would be sanitized in <a href="#embeddable-mode" title="A variant of IML transformation that intends to produce output suitable for embedding in a containing website.">embeddable mode</a>, are naturally standalone. Documents that contain no content requiring sanitization are naturally embeddable.</p>
 </dd>
 
 <dt id="S" class="letter">S</td>
 <dt id="standalone-mode">standalone mode <span class="tag">#intent</span></dt>
-<dd><p>A variant of <a href="#iml-transformation" title="The process of converting IML to HTML.">IML transformation</a> that intends to produce rich, self-contained documents. Such output is not <a href="https://en.wikipedia.org/wiki/HTML_sanitization">sanitized</a>, and is therefore unsafe to display as a child of any other HTML container. Contrast <a href="#embedded-mode" title="A variant of IML transformation that intends to produce output suitable for embedding in a containing website.">embedded mode</a>.</p>
+<dd><p>A variant of <a href="#iml-transformation" title="The process of converting IML to HTML.">IML transformation</a> that intends to produce rich, self-contained documents. Such output is not <a href="https://en.wikipedia.org/wiki/HTML_sanitization">sanitized</a>, and is therefore unsafe to display as a child of any other HTML container. Contrast <a href="#embedded-mode">embedded mode</a>. See also <a href="#natural-mode" title="The mode of IML transformation that's implied by the content of the document.">natural mode</a>.</p>
 </dd>
 </dl>
 
