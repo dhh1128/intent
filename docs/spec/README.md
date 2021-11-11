@@ -2,7 +2,7 @@
 
 ## Introduction
 
-The Intent programming language combines two types of content that have different syntax:
+The Intent formal language combines two types of content that have different syntax:
 
 1. [Intent Markup Language (IML)](../glossary.html#intent-markup-language-iml) 
 2. [Intent Programming Language (IPL)](../glossary.html#intent-programming-language-ipl)
@@ -27,7 +27,11 @@ IML also introduces some semantics that extend beyond the limits of ordinary HTM
 
 For safety and simplicity reasons, intent docs are assumed to intend [embeddable mode](../glossary.html#embeddable-mode) only. The transformation of individual files can always be forced into [standalone mode](../glossary.html#standalone-mode) with the `--standalone-mode` switch. Alternatively, the `--natural-mode` switch will render all files in their [natural mode](../glossary.html#natural-mode).
 
-A file can declare or inherit a `standalone prefix` and/or `standalone suffix` property; the direct declaration of such a prefix or suffix changes the natural mode for the content to standalone. During standalone mode transformation, the content of `standalone prefix` is prepended to the main output as if it were a pure HTML fragment that contained all structure up to and including `<body>`; the content of `standalone suffix` is appended as if it were a pure HTML fragment that contained at least `</body></html>`.  
+A file can declare or inherit a `standalone prefix` and/or `standalone suffix` property; the direct declaration of such a prefix or suffix changes the natural mode for the content to standalone. During standalone mode transformation, the content of `standalone prefix` is prepended to the main output as if it were a pure HTML fragment that contained all structure up to and including `<body>`; the content of `standalone suffix` is appended as if it were a pure HTML fragment that contained at least `</body></html>`. 
+
+#### Standalone features
+
+The sanitization of embeddable mode allows the same tags and HTML attributes as [HTMLSanitizer's default posture](https://github.com/mganss/HtmlSanitizer#tags-allowed-by-default). Any HTML constructs beyond this will either be sanitized or require standalone mode. 
 
 #### Hyperlinks and Anchors
 
