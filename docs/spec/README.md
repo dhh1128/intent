@@ -4,20 +4,46 @@
 
 The Intent programming language combines two types of content that have different syntax:
 
-1. itext 
-2. icode
+1. [Intent Markup Language (IML)](../glossary.html#intent-markup-language-iml) 
+2. [Intent Programming Language (IPL)](../glossary.html#intent-programming-language-ipl)
 
-Itext is a readable, flexible text format that has much in common with markdown.
+*Both* types of content have the dual humans+compilers audience. IML is more than simple commentary, and icode is more than machine-readable symbols. They are synergistic and intended to mix in a single document. Intent enforces some aspects of the relationship between the two (e.g., the integrity of hyperlinks, the semantics of marks).
 
-Icode has more in common with traditional source code.
+### IML
 
-*Both* types of content have a dual audience: humans and compilers. Itext is more than simple commentary, and icode is more than machine-readable symbols. They are synergistic and intended to mix in a single document. Intent enforces some aspects of the relationship between the two (e.g., the integrity of hyperlinks, the semantics of marks).
+IML is a variation of [Github-Flavored Markdown](https://github.github.com/gfm/) (which is in turn a variation of [CommonMark](https://spec.commonmark.org/)). Rather than reproducing a slight variation on the GFM spec here, only differences are documented.
 
-### Itext
+#### Different assumptions
 
-All intent 
+Markdown prioritizes the goal of generating content that can display safely inside a containing website. This means it favors simple syntax, even at the expense of expressive power. Typically, implementations also sanitize various HTML constructs (CSS, `<style>`, `<script>`, many HTML tag attributes, etc.) to prevent [cross-site scripting (XSS)](https://owasp.org/www-community/attacks/xss/#) and [scriptless attacks](https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.469.7647&rep=rep1&type=pdf). 
 
+Markdown makes no attempt to expand HTML's expressive power; the output of a markdown transform is a strict subset of what HTML is capable of representing.
 
+IML prioritizes powerful standalone documents more highly. Although most IML is as simple to learn and read as markdown, it has more options for advanced users. And instead of mandating the sanitization of dangerous HTML elements, it defines choices for [transforming](../glossary.html#iml-transformation) in [embeddable mode](../glossary.html#embeddable-mode), [standalone mode](../glossary.html#standalone-mode), or [natural mode](../glossary.html#natural-mode). This preserves safety where it is needed, but allows far more sophisticated standalone output.
+
+IML also introduces some semantics that extend beyond the limits of ordinary HTML.
+
+#### Transformation modes
+
+For safety and simplicity reasons, intent docs are assumed to intend [embeddable mode](../glossary.html#embeddable-mode) only. The transformation of individual files can always be forced into [standalone mode](../glossary.html#standalone-mode) with the `--standalone-mode` switch. Alternatively, the `--natural-mode` switch will render all files in their [natural mode](../glossary.html#natural-mode).
+
+A file can declare or inherit a `standalone prefix` and/or `standalone suffix` property; the direct declaration of such a prefix or suffix changes the natural mode for the content to standalone. During standalone mode transformation, the content of `standalone prefix` is prepended to the main output as if it were a pure HTML fragment that contained all structure up to and including `<body>`; the content of `standalone suffix` is appended as if it were a pure HTML fragment that contained at least `</body></html>`.  
+
+#### Hyperlinks and Anchors
+
+See [hypertext](hypertext.md).
+
+#### Includes
+
+IML supports includes as a convenience.
+
+#### Mustaches
+
+[Mustache templates](https://mustache.github.io/) are supported. A number of predefined metadata variables are defined:
+
+* `{{doc.*}}` &mdash; Document attributes: `size`, `lastmod`, `author`, `commit-hash`, `version`, `relative-path`...
+* `{{time.*}}` &mdash; Timestamps in various formats: `yyyy-mm-ddThh:nn:ss.xZ` and similar.
+* `{{space.*}}` &mdash; Information about the codebase that contains the doc: `doc-count`, `upstream`, `origin`.
 
 1.1 Hello, World
 The “Hello, World” problem domain is too simple to align nicely with intent's positioning, but in the interests of tradition, here is some code for illustration purposes:
