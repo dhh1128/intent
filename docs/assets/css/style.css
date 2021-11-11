@@ -480,12 +480,6 @@ a:hover {
     background-position: left bottom;
     padding: 1.5rem 2rem;
 }
-@media screen {
-    .page-header {
-        position: sticky;
-        top: 0;
-    }
-}
 .project-name {
     margin-top: 0;
     margin-bottom: 0.1rem;
@@ -702,12 +696,6 @@ header > a.btn { display: none; }
 body > nav {
     text-align: center;
     background-color: #eee;
-}
-@media screen {
-    body > nav {
-        width: 100%;
-        position: fixed;
-    }
 }
 
 dl > dt > span.tag { display: none; }
