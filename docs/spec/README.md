@@ -31,7 +31,9 @@ A file can declare or inherit a `standalone prefix` and/or `standalone suffix` p
 
 #### Standalone features
 
-The sanitization of embeddable mode allows the same tags and HTML attributes as [HTMLSanitizer's default posture](https://github.com/mganss/HtmlSanitizer#tags-allowed-by-default). Any HTML constructs beyond this will either be sanitized or require standalone mode. 
+The sanitization of embeddable mode allows the same tags, HTML attributes, and CSS attributes as [HTMLSanitizer's default posture](https://github.com/mganss/HtmlSanitizer#tags-allowed-by-default). Note that this is substantially richer than the set allowed in Github Markdown.
+
+Any HTML constructs beyond this require standalone mode. 
 
 #### Hyperlinks and Anchors
 

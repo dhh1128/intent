@@ -1,20 +1,22 @@
 ## Hypertext
 
-Intent is a powerful hypertext format. It promotes what linguists call __deixis__ -- pointing with language.
+Intent is an extremely powerful hypertext format. For clarity and ease of use, it supports most hypertext features from markdown. It also plugs gaps where markdown can't quite match HTML (e.g., the ability to specify a `target` for a link). And it even goes beyond HTML, offering asides, comments, and footnotes/endnotes like a word processor, definition links like ReSpec, and a few hypertext constructs that are totally unique.
 
-Intent supports all of the linking constructs that HTML has popularized, plus some advanced features offered by word processors and desktop publishing software, plus some features that are unique.
-
-### TL;DR
+### Quick Reference
 
 element | syntax
 --- | ---
-[hyperlink](#hyperlinks) | <code>[@ref&vert;clickable content]</code>. Advanced params can be added between `ref` and `clickable`, delimited by `;`
-[simple text anchor](#simple-text-anchors) | `[anchor text]`
-[text anchor with explicit id](#explicit-anchor-ids) | `[id: anchor text]`
-[location anchor without content](#location-anchors) | `[id:]`
-[code anchors](#code-anchors) | automatic from structure; referenced with dotted notation
-[anchors for media and other complex content](#anchor-pairs) | `[id ...]`content`[/]`. Unlike HTML, overlapping anchors are supported.
-[disjoint anchors](#disjoint-anchors) | `[id+:anchor text]` and/or `[id+ ...]`content`[/]` in any combination; only one needs to have `+` after the `id`
+[normal hyperlink](#hyperlinks) | `[clickable content](ref)`, as in markdown. Advanced params can be added after `ref` using <code>&vert;</code> and `target=x; rel=y` syntax. Unlike HTML or markdown, IML allows nested anchors (e.g., where a full sentence is an anchor, a word inside the sentence can also be an anchor).
+[terse hyperlink](#terse-hyperlinks) | `[#clickable content]`, where the clickable content [derives the ID](#comparing-anchor-ids) of an anchor elsewhere. The `#` character is not rendered.
+autolinks | Tokens that match URI syntax and that begin with `http://`, `https://`, and `mailto:` are automatically treated as hyperlinks by intent, unless they are immediately preceded by empty braces, as in `[]http://example.com/dont-make-me-clickable`.
+[simple text anchor](#simple-text-anchors) | `[anchor text]`. ID is [derived from](#comparing-anchor-ids) anchor text.
+[anchor with explicit ID](#explicit-anchor-ids) | `[id: anchor text]`. Only `anchor text` is rendered.
+[hidden or empty anchors](#hidden-or-empty-anchors) | `[id:]`
+[headers as anchors](#headers-as-anchors) | Same as markdown: `# My header` becomes an anchor referencable as `#my-header`. The space after `#` is required. Unlike markdown, IML allows this to be overridden by inserting an explicit ID at the beginning of the header's content: `# [short-id:]My unwieldy header (and humorous aside)`.
+[definition anchor](#definition-text-anchors) | `[=term with definition in surround paragraph]`. Typically referenced with a [terse hyperlink](#terse-hyperlinks).
+[code anchors in IPL](#code-anchors) | Automatic from structure; referenced with dotted notation.
+[anchors for media and other complex content](#anchor-pairs) | `[id ...]content[/]`. Unlike HTML, overlapping anchors are supported.
+[disjoint anchors](#disjoint-anchors) | Add a `+` after at least one instance of a repeated explicit ID: `[id+:anchor text]` and/or `[id+ ...]content[/]`. All content with the same ID becomes part of a single disjoint anchor.
 
 ### Anchors
 
@@ -22,25 +24,25 @@ An anchor is a target for a hyperlink -- something we can point *at*. It may be 
 
 #### Simple text anchors
 
-The most common thing to point at in intent is text, and the simplest way to anchor text is to enclose it in square brackets. For example, the following paragraph defines anchors around two terms, so they can be referenced elsewhere:
+The most common thing to point at in intent is text, and the simplest way to make it a pointable target is to enclose it in square brackets. For example, the following paragraph defines anchors around two terms, so they can be referenced elsewhere:
 
-```i
+```iml
 [Magnetic resonance imaging] ([MRI]) is a medical imaging
 technique used in radiology to form pictures of the anatomy
 and the physiological processes of the body.
 ```
 
-__Anchor text__ like "Magnetic resonance imaging" is intended to be displayed inline with the text that surrounds it -- probably un-stylized. Enclosing it in square brackets simply creates a region of the text that can be pointed to:
+__Anchor text__ like "Magnetic resonance imaging" in the example above is intended to be visualized inline with the text that surrounds it -- probably un-stylized, and certainly without the square brackets. Enclosing it in square brackets simply delimits the region of the text that can be pointed to:
 
 ![simple text anchors](../assets/simple-text-anchors.png)
 
 #### Anchor IDs
 
-Each anchor defines an __anchor ID__. This is a short, memorable string that uniquely identifies the anchor within its container.
+Each anchor defines one (or more) __anchor IDs__. This is a short, memorable string that uniquely identifies the anchor within its container.
 
 ##### Implicit anchor IDs
 
-The easiest way to define the ID of an anchor is to leave it implicit -- let it be calculated automatically from the anchor text itself. This is what happens with the simple square bracket notation in the MRI example above; the ID for "MRI" is "MRI", too. Or close enough. (See [Comparing anchor IDs below for more](#comparing-anchor-ids).)
+The easiest way to define the ID of an anchor is to leave it implicit -- let it be calculated automatically from the anchor text itself. This is what happens with the simple square bracket notation in the MRI example above; the ID for "MRI" is "MRI", too. Or close enough. (See [Comparing anchor IDs below](#comparing-anchor-ids) for more details.)
 
 ##### Explicit anchor IDs
 
@@ -50,9 +52,15 @@ It is also possible to customize the ID for an anchor using a more verbose __exp
 The [ww2history: history of World War II] is long and complex.
 ```
 
+The `id:` prefix can also be added to hyperlinks, making them anchors even as they point elsewhere.
+
+##### ID variants
+
+The same anchor can have multiple ID variants; see [Definition Anchors &gt; Inflection](#inflection) for an example use case and syntax.
+
 ##### Comparing anchor IDs
 
-Whether anchor IDs are implicit or explicit, intent recognizes and compares them in a way that makes them convenient and robust for humans. Minor details are ignored: ID values are trimmed, converted to lower case, and have all runs of punctuation and/or spaces replaced with a single hyphen. This means that the anchor id `MRI` could also be written as `mri`. And this more complex example:
+Whether anchor IDs are implicit or explicit, intent recognizes and compares them in a way that makes them convenient and robust for humans. Minor details are ignored: ID values are trimmed, converted to lower case, and have all runs of punctuation and/or spaces replaced with a single hyphen. This means that the anchor id `MRI` could also be written as `mri`. And this contrived example of an ugly ID:
 
     He won't -- or shouldn't, anyway! -- say "Get lost."
 
@@ -62,27 +70,64 @@ Whether anchor IDs are implicit or explicit, intent recognizes and compares them
 
 The lower kabob-case form is canonical. However, variants of this ID that are just capitalized or punctuated differently will also be seen as equivalent.
 
-In addition, *references* to long IDs can be abbreviated with an ellipsis, as long as the portion of the ID that remains is still unambiguous. In most containers, the long ID above could probably be referenced as `He won't...` or `... say 'Get lost'` or even `he...get-lost`.
+In addition, *references* to IDs can be abbreviated with an `*` wildcard, as long as the portion of the ID that remains is unambiguous. In most containers, the long ID above could probably be referenced as `He won't*` or `* say 'Get lost'` or even `he*get-lost`.
 
-#### Location anchors
+#### Hidden or empty anchors
 
-Sometimes the intent is to anchor a location *inside* content, rather than anchoring content itself. For example, you might want to point between two words. To do this, simply insert an explicit anchor ID without any anchor text:
+Sometimes the intent is to anchor a location, rather than anchoring visible content. For example, you might want to point between two words to show someone where a missing piece of content belongs. To do this, simply insert an explicit anchor ID without any anchor text:
 
 ```i
 running text[insert-here:] more running text
 ```
 
-Note the lack of a space after "text". The anchor is for an insert point immediately after text. If we had instead written:
+Note the lack of a space after "text". The anchor is for an insert point immediately after "text". If we had instead written:
 
 ```i
 running text [insert-here:] more running text
 ```
 
-...the anchor would instead be between two spaces.
+...the anchor would be between two spaces.
+
+#### Definition anchors and references
+
+In legal and technical documents, it's common to define terms. Often, this is done in the running text of a paragraph. Instances of the term in other places in the doc can then link back to its definition, helping readers who forget the details or consume the content out of order.
+
+Definition anchors in intent facilitate this pattern. They resemble the behavior of `<def>` tags in ReSpec. Where a term is defined, use `[=defined term]` to create an anchor. Where it is referenced, usually [terse link](#terse-links) syntax is optimal: `[#defined term]`.
+
+In the example text about MRIs that we showed above, it might make sense to upgrade to definition anchors, since the paragraph in question actually does provide a definition. The result would look like this:
+
+```iml
+[=Magnetic resonance imaging] ([=MRI]) is a medical imaging
+technique used in radiology to form pictures of the anatomy
+and the physiological processes of the body.
+```
+
+Later in the document, we'd reference such a definition this way:
+
+```iml
+In certain circumstances, an [#MRI] provides diagnostic insight that is unavailable with a CAT scan. 
+```
+
+##### Inflection
+
+But what if we wanted to make our term reference plural: "MRIs provide diagnostic insight..."? Now our clickable term ends with `-s`, whereas its definition is the uninflected singular form... There are two solutions: 
+
+* Add __ID variants__ to the anchor: In the definition anchor, do something like this: `[=MRI[id:MRIs]]`; intent renders only the first form in the *in situ* context, but will accept all others as equally valid variants in references. Variants can include the `*` wildcard; `[=invoking|invoc*|invok*]` creates ID variants that match any form of the verb `invoke`.
+
+    >Note 1: It also creates some nonsense possibilities like accidentally mapping `[#invoc-o-matic]` to the `invoc*` anchor -- but since the author chooses whether to insert such references, and since definition references can only point at definition anchors, there's little practical difficulty with the fuzzy target.
+
+    >Note 2: ID variants are not currently supported for anything except definition anchors. Perhaps they will be supported elsewhere in the future. 
+
+* Just use a traditional hyperlink in the `[clickable text](#id)` form:
+
+    ```iml
+    In certain circumstances, [MRIs](#mri) provide diagnostic 
+    insight that is unavailable with a CAT scan. 
+    ```
 
 #### Code anchors
 
-The structure of intent source code automatically creates anchors. All formally assigned identifiers (block headers that end in a colon and are followed by indented content) in intent are anchored to their place of definition. In this code:
+The structure of [IPL](../glossary#intent-programming-language) source code automatically creates anchors. All formally assigned identifiers (block headers that end in a colon and are followed by indented content) in intent are anchored to their place of definition. In this code:
 
 ```i
 Register to vote: bool
@@ -101,7 +146,7 @@ Pointing at a simple word or phrase is relatively easy -- but intent supports mo
 
 ##### Anchor pairs
 
-When anchors encompass content that is non-textual, large, or complex, an __anchor pair__ is used. This is somewhat like a begin tag/end tag pair in HTML. The __anchor start__ contains the anchor ID followed by whitespace and an ellipsis, ` ...`. The __anchor end__ is another bracketed expression that contains the anchor ID preceded by slash:
+When anchors encompass content that is non-textual, large, or complex, an __anchor pair__ can be used. This is somewhat like a begin tag/end tag pair in HTML. The __anchor start__ contains the anchor ID followed by whitespace and an ellipsis. The __anchor end__ is another bracketed expression that contains the anchor ID preceded by slash:
 
 ```i
 Sonnet 29 is a famous romantic poem by Shakespeare. 
@@ -109,7 +154,7 @@ It goes like this:
 
     [sonnet-29 ...]
     (all the text of the poem)
-    [/sonnet]
+    [/sonnet-29]
 ```
 
 The anchor end only needs enough of the ID from the anchor start to be unambiguous. Often, this could simplify all the way to:
@@ -171,7 +216,7 @@ Hyperlinks also support a paired variant that follows the same rules as anchors:
 
 ## Interjections
 
-An interjection is a way of managing linked content where it is convenient to create and maintain it, but displaying it somewhere else. Interjections are intent's way of dealing with things like footnotes, endnotes, callouts, and similar assets. In an editor, iterjections are defined inline: inside, next to, or near the content they enhance, in an editor. However, they may be rendered in an entirely different place, such as a footer, an appendix, etc.
+An interjection lets authors manage linked content where it is convenient to create and maintain -- but display it somewhere else. Interjections are intent's way of dealing with things like footnotes, endnotes, callouts, and similar assets. In an editor, interjections are defined inline: inside, next to, or near the content they enhance. However, they may render in an entirely different place such as a footer or an appendix.
 
 An interjection may have one or more __display points__ where its content or some subset or transformation thereof is rendered. 
 
