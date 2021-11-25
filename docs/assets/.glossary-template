@@ -3,21 +3,21 @@
   <head>
     <meta charset="UTF-8">
 
-<!-- Begin Jekyll SEO tag v2.7.1 -->
-<title>Glossary | the intent formal language</title>
-<meta name="generator" content="Jekyll v3.9.0" />
-<meta property="og:title" content="intent" />
-<meta property="og:locale" content="en_US" />
-<meta name="description" content="the intent formal language" />
-<meta property="og:description" content="the intent formal language" />
-<link rel="canonical" href="https://intentlang.org/glossary.html" />
-<meta property="og:url" content="https://intentlang.org/glossary.html" />
-<meta property="og:site_name" content="intent" />
-<meta name="twitter:card" content="summary" />
-<meta property="twitter:title" content="intent" />
-<script type="application/ld+json">
-{"description":"the intent formal language","url":"https://intentlang.org/glossary.html","@type":"WebPage","headline":"intent","@context":"https://schema.org"}</script>
-<!-- End Jekyll SEO tag -->
+    <!-- Begin Jekyll SEO tag v2.7.1 -->
+    <title>Glossary | the intent formal language</title>
+    <meta name="generator" content="Jekyll v3.9.0" />
+    <meta property="og:title" content="intent" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="description" content="the intent formal language" />
+    <meta property="og:description" content="the intent formal language" />
+    <link rel="canonical" href="https://intentlang.org/glossary.html" />
+    <meta property="og:url" content="https://intentlang.org/glossary.html" />
+    <meta property="og:site_name" content="intent" />
+    <meta name="twitter:card" content="summary" />
+    <meta property="twitter:title" content="intent" />
+    <script type="application/ld+json">
+    {"description":"the intent formal language","url":"https://intentlang.org/glossary.html","@type":"WebPage","headline":"intent","@context":"https://schema.org"}</script>
+    <!-- End Jekyll SEO tag -->
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link rel="preload" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap" as="style" type="text/css" crossorigin>
@@ -26,22 +26,78 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="stylesheet" href="/assets/css/style.css?v=3f3d0ff41cd73eb3af96ce9a8887b7c7da038069">
     <link rel="stylesheet" href="/assets/overrides.css">
-<link rel="icon" type="image/png" sizes="128x128" href="/assets/logo-128.png">
-<link rel="icon" type="image/png" sizes="48x48" href="/assets/logo-48.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/assets/logo-32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/assets/logo-16.png">
-<link rel="shortcut icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="128x128" href="/assets/logo-128.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="/assets/logo-48.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/logo-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/logo-16.png">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <style>
+._slf {
+    float: left;
+    padding-right: 4px;
+    padding-top: 4px;
+    margin-left: -20px;
+    cursor: pointer;
+    width:16px;
+    height:16px;
+    display: none;
+}
+
+dt:not(.letter):hover > ._slf {
+    display: inline;
+}
+
+._xl {
+    padding-right: 4px;
+    display: none;
+    cursor: pointer;
+    width:16px;
+    height:16px;
+}
+
+dt:not(.letter):hover > ._xl {
+  display: inline;
+}
+    </style>
+    <script>
+var getAbsoluteUrl = (function() {
+  var a;
+  return function(url) {
+      if (!a)
+        a = document.createElement('a');
+      a.href = url;
+      return a.href;
+  };
+})();
+
+function copyUrl(url) {
+  x = getAbsoluteUrl(url);
+  navigator.clipboard.writeText(x);
+}
+
+function goto(url) {
+  window.location = url;
+}
+    </script>
   </head>
   <body>
+    <svg style="display:none">
+      <symbol id="_slf" viewBox="0 0 16 16">
+        <path style="fill:#aaa" fill-rule="evenodd"
+              d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"/>
+      </symbol>
+      <symbol id="_xl" viewBox="0 -256 1850 1850">
+        <g transform="matrix(1,0,0,-1,30.372881,1426.9492)">
+          <path style="fill:#aaa"
+                d="M 1408,608 V 288 Q 1408,169 1323.5,84.5 1239,0 1120,0 H 288 Q 169,0 84.5,84.5 0,169 0,288 v 832 Q 0,1239 84.5,1323.5 169,1408 288,1408 h 704 q 14,0 23,-9 9,-9 9,-23 v -64 q 0,-14 -9,-23 -9,-9 -23,-9 H 288 q -66,0 -113,-47 -47,-47 -47,-113 V 288 q 0,-66 47,-113 47,-47 113,-47 h 832 q 66,0 113,47 47,47 47,113 v 320 q 0,14 9,23 9,9 23,9 h 64 q 14,0 23,-9 9,-9 9,-23 z m 384,864 V 960 q 0,-26 -19,-45 -19,-19 -45,-19 -26,0 -45,19 L 1507,1091 855,439 q -10,-10 -23,-10 -13,0 -23,10 L 695,553 q -10,10 -10,23 0,13 10,23 l 652,652 -176,176 q -19,19 -19,45 0,26 19,45 19,19 45,19 h 512 q 26,0 45,-19 19,-19 19,-45 z" />
+        </g>
+      </symbol>
+    </svg>
     <a id="skip-to-content" href="#content">Skip to the content.</a>
 
     <header class="page-header" role="banner">
       <h1 class="project-name">Glossary</h1>
       <h2 class="project-tagline">the intent formal language</h2>
-
-        <a href="https://github.com/dhh1128/intent" class="btn">View on GitHub</a>
-
-
     </header>
 %nav
     <main id="content" class="main-content" role="main">
