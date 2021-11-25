@@ -1,7 +1,10 @@
 [package]
 name = "i"
 version = "0.1.0"
+authors = ["Daniel Hardman <daniel.hardman@gmail.com>"]
 edition = "2021"
+description = "The intent compiler."
+homepage = "https://intentlang.org/"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
