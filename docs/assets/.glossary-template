@@ -54,7 +54,7 @@ dt:not(.letter):hover > ._slf {
     height:16px;
 }
 
-dt { font-size: 1.2rem; }
+#glossary_content > dt { font-size: 1.2rem; }
 dt.letter { text-align: center; font-weight: normal; color: #aaa }
 
 dt:not(.letter):hover > ._xl {
