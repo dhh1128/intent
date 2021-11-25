@@ -7,7 +7,9 @@ The Intent formal language combines two types of content that have different syn
 1. [Intent Markup Language (IML)](../glossary.html#intent-markup-language-iml) 
 2. [Intent Programming Language (IPL)](../glossary.html#intent-programming-language-ipl)
 
-*Both* types of content have the dual humans+compilers audience. IML is more than simple commentary, and icode is more than machine-readable symbols. They are synergistic and intended to mix in a single document. Intent enforces some aspects of the relationship between the two (e.g., the integrity of hyperlinks, the semantics of marks).
+*Both* types of content have a dual *humans + compilers* audience; IML is more than simple commentary, and IPL is more than machine-readable instructions. 
+
+Note which audience member is listed first. One of the goals of intent is to keep the human audience primary. It does this in many ways -- but one of the most important is that it allows authors to combine powerful exposition and powerful code in a single document. Intent enforces the semantics that connect them.
 
 ### IML
 
