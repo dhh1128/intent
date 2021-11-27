@@ -1,21 +1,33 @@
-# Spaces
-Intent code and assets is fetched, designed, tested, and transformed into consumable artifacts within a structural container known as a space. Spaces are commonly embodied as a folder hierarchy in a filesystem.
+# Projects
 
-Spaces are similar to concepts such as solution, workspace, or project in many IDEs. However, in intent, the space is itself a first-class language feature that must be fully supported by conforming implementations; although tools are free to decorate or enhance a space with their own metadata, they may not replace it or ignore the semantics associated with its structure.
+Intent exists to help creative people produce [@artifacts]: libraries, binaries, websites, documents, and so forth. A [@component] is the source code that embodies the intent for an artifact. A [@project] is a collection of components that collectively embody a cohesive unit of creative intent, organized according to intent's project structure.
 
-## motivation
+## Project Structure
 
-Pragmatism drives this choice. Studies have shown that build frustrations are a major problem for development teams, and that "keeping a build fast and understanding when and how it fails is a key part of improving programmer productivity." This jives with observations from Agile proponents, as well as decades of enterprise software development experience by the designers of intent. Continuous integration servers such as Jenkins, TeamCity, and CruiseControl thrive on normalized, predictable build behaviors--and so does automated testing, as well as sharing and reuse in the FOSS communities.
+A project is stored as a folder in the filesystem. The structure of projects is very regular. Here are the basics for a fictional project that might contain all the software to run a moonbase for a crew of astronauts:
 
-The lack of a standard for dependency management and project semantics in older languages causes endless headaches as engineers churn on structure in the IDE or build toolset du jour. If you download C++ code that its creator built with scons, but you like to use cmake, you waste hours redefining the build process; if you and your friend don't agree on the relative paths between two components, or if you have installed slightly different library versions, a common formula for building may be expensive or impossible to maintain. Newer approaches (maven, gradle...) have begun to address this problem--but in intent, a robust and satisfying answer is standardized from the get-go.
+```
+moonbase-os
+├── LICENSE
+├── in
+│   ├── comms
+│   ├── life-support
+│   └── power
+├── out
+│   ├── arm32-debug
+│   ├── no-arch
+│   │   └── website
+│   ├── x64-debug
+│   └── x64-release
+├── .gitignore
+└── this.i
+```
 
-## filesystem interface
+The `in/` folder contains components and is called the __component root__. When intent builds artifacts, it consumes the code and other content here. 
 
-Spaces are not necessarily stored in filesystems; conforming implementations may persist them in a database, front them with WebDAV or a RESTful web service, stream them to and from an object store, compress them in a zip archive, and so forth. However, the interface to a space must be filesystem-like. Each space comprises a coherent namespace, and items within the space are identified contextually by relative path/URL. Items can be thought of as files, and they are manipulated with familiar file operations like copy, move, rename, delete, and edit. Throughout this spec, the terms folder and file should be understood in this light.
+The `out/` folder contains files produced by the intent tooling from input in the `in/`. This folder should be listed in `.gitignore`.
 
-All intent code files are encoded with utf-8, without exception. All other text files within a space are also assumed to be encoded with utf-8, unless circumstances demand different treatment (e.g., a non-utf-8 data file is needed as input to a test, specifically to exercise charset handling).
-
-All URLs within a space are segmented with /, regardless of the path separator of the underlying host environment. Because text files are utf-8, whenever URLs appear in files within the space, they are encoded with utf-8, regardless of which charset is active in the underlying host environment. URLs are also percent-encoded (preferably, for reserved characters only, but optionally, with non-reserved characters as well). Conforming implementations are required to recognize percent encodings with only reserved characters, and percent encodings that include additional, unreserved characters, as equivalent. See the wikipedia article for details. For platform independence, URLs within the space should be considered case-sensitive, even when the host environment for the space is more tolerant. None of the behaviors of a space depend on support for symbolic links, although such a feature may offer useful enhancements, and explicitly supporting "shortcut" files similar to .lnk on windows or .desktop on linux is under consideration as a feature.
+Intent code can reference other intent code using relative paths. An intent URL that begins with `//` is relative to the component root, and an intent URL that begins with `///` is relative to the project root.
 
 ## grouping concepts
 
