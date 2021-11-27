@@ -55,7 +55,12 @@ dt:not(.letter):hover > ._slf {
 }
 
 #glossary_content > dt { font-size: 1.2rem; }
-dt.letter { text-align: center; font-weight: normal; color: #aaa }
+dt.letter {
+    text-align: center;
+    font-weight: normal;
+    color: #aaa;
+    padding-top: 1em;
+}
 
 dt:not(.letter):hover > ._xl {
   display: inline;
@@ -101,7 +106,7 @@ function goto(url) {
       <h1 class="project-name">Glossary</h1>
       <h2 class="project-tagline">the intent formal language</h2>
     </header>
-<nav>[ A B C <a href="#D">D</a> <a href="#E">E</a> F G H <a href="#I">I</a> J K L <a href="#M">M</a> <a href="#N">N</a> O P Q R <a href="#S">S</a> T U V W X Y Z ]</nav>
+<nav>[ A B C <a href="#D">D</a> <a href="#E">E</a> F G H <a href="#I">I</a> J K L <a href="#M">M</a> <a href="#N">N</a> O <a href="#P">P</a> Q R <a href="#S">S</a> T U V W X Y Z ]</nav>
 
     <main id="content" class="main-content" role="main">
 <dl id="glossary_content">
@@ -150,6 +155,11 @@ function goto(url) {
 <dt id="N" class="letter">N</td>
 <dt id="natural-mode"><svg class="_slf" onclick="copyUrl('#natural-mode')"><use href="#_slf"/></svg>natural mode <svg class="_xl" onclick="goto('https://github.com/dhh1128/intent/wiki//natural-mode')"><use href="#_xl"/></svg><span class="tag">#intent</span></dt>
 <dd><p>The mode of <a href="#iml-transformation" title="The process of converting IML to HTML.">IML transformation</a> that's implied by the content of the document. Documents that contain a <code>standalone prefix</code> or <code>standalone suffix</code> property, or that contain any HTML content that would be sanitized in <a href="#embeddable-mode" title="A variant of IML transformation that intends to produce output suitable for embedding in a containing website.">embeddable mode</a>, are naturally standalone. Documents that contain no content requiring sanitization are naturally embeddable.</p>
+</dd>
+
+<dt id="P" class="letter">P</td>
+<dt id="project"><svg class="_slf" onclick="copyUrl('#project')"><use href="#_slf"/></svg>project <svg class="_xl" onclick="goto('https://github.com/dhh1128/intent/wiki//project')"><use href="#_xl"/></svg><span class="tag">#intent</span></dt>
+<dd><p>A collection of <a href="#component">components</a> that collectively embody a cohesive unit of creative intent, organized according to <a href="https://intentlang.org/spec/projects">intent's project structure</a>. Projects approximately map onto repos in git, packages in Rust, and project or workspace constructs in many IDEs.</p>
 </dd>
 
 <dt id="S" class="letter">S</td>
