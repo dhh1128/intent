@@ -1,10 +1,13 @@
-#[macro_use]
+//#[macro_use]
 extern crate lazy_static;
 
 pub mod ast {
     use std::fs::File;
     use std::io::{BufRead, BufReader};
-    use std::path::Path;
+
+    pub enum TokenKind {
+        TEXT,
+    }
 
     pub struct SimpleText {
         pub text: String
@@ -51,9 +54,11 @@ pub mod ast {
 
 #[cfg(test)]
 mod tests {
-    use std::path::Path;
+
     use std::path::PathBuf;
     use std::clone::Clone;
+
+    use lazy_static::lazy_static;
 
     use crate::ast::*;
 
