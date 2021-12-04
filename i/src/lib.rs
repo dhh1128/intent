@@ -1,13 +1,14 @@
 //#[macro_use]
 extern crate lazy_static;
+#[macro_use]
+extern crate derive_new;
+
+
+mod iml;
 
 pub mod ast {
     use std::fs::File;
     use std::io::{BufRead, BufReader};
-
-    pub enum TokenKind {
-        TEXT,
-    }
 
     pub struct SimpleText {
         pub text: String

@@ -11,3 +11,4 @@ homepage = "https://intentlang.org/"
 [dependencies]
 colored = "2"
 lazy_static = "1.4.0"
+derive-new = "0.5"
