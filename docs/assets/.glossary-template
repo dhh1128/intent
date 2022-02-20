@@ -25,7 +25,6 @@
     <meta name="theme-color" content="#157878">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="stylesheet" href="/assets/css/style.css?v=3f3d0ff41cd73eb3af96ce9a8887b7c7da038069">
-    <link rel="stylesheet" href="/assets/overrides.css">
     <link rel="icon" type="image/png" sizes="128x128" href="/assets/logo-128.png">
     <link rel="icon" type="image/png" sizes="48x48" href="/assets/logo-48.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/assets/logo-32.png">
