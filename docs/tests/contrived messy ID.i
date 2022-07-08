@@ -1,0 +1,1 @@
+Here is some text with a contrived, messy ID: [He won't -- or shouldn't, anyway! -- say "Get lost."]

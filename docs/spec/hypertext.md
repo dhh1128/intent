@@ -1,22 +1,31 @@
+asides with {} on line by itself, outdented; possibly identify or stylize the asides after opening bracket
+special convention: single letter ids resets with every paragraph (not a disjoint anchor)
+spans: not for hyperlinking but for connecting, underlining, etc: [- highlighted text] or [_ underlined text] or [| boxed text] (default color = gray); also [-red- text] or [_red_ text] or [|red| text]
+footnotes with [#a: referencing text] and [a:] explanatory note
+multiple footnotes on the same referencing text: [#a,b: referencing text]
+paragraph numbers with 1- instead of 1.
+autonumber list/paragraph with 0. and 0-; otherwise manually numbered
+list styles a.
+
 ## Hypertext
 
-Intent is an extremely powerful hypertext format. For clarity and ease of use, it supports most hypertext features from markdown. It also plugs gaps where markdown can't quite match HTML (e.g., the ability to specify a `target` for a link). And it even goes beyond HTML, offering asides, comments, and footnotes/endnotes like a word processor, definition links like ReSpec, and a few hypertext constructs that are totally unique.
+Intent is an extremely powerful hypertext format. For clarity and ease of use, it supports most hypertext features from pure markdown and from [many of markdown's variants](https://gist.github.com/vimtaai/99f8c89e7d3d02a362117284684baa0f). It also plugs gaps where markdown omits an HTML feature (e.g., the ability to specify a `target` for a link). And it even goes beyond HTML, offering [highlights](highlights.md), [comments, footnotes, and endnotes](asides.md) like a word processor, [definition links like ReSpec](https://respec.org/docs/#definitions-and-linking), plus a few hypertext constructs that are totally unique.
 
 ### Quick Reference
 
 element | syntax
 --- | ---
-[normal hyperlink](#hyperlinks) | `[clickable content](ref)`, as in markdown. Advanced params can be added after `ref` using <code>&vert;</code> and `target=x; rel=y` syntax. Unlike HTML or markdown, IML allows nested anchors (e.g., where a full sentence is an anchor, a word inside the sentence can also be an anchor).
+[normal hyperlink](#hyperlinks) | `[clickable content](ref)`, as in markdown. Advanced params can be added after `ref` but before the closing paren, using <code>&vert;</code> and `a=b; x=y` syntax: <code>[clickable content](ref&vert; download=license.txt; rel=license)</code>. Whitespace before and after the <code>&vert;</code> and `;` characters are optional.
 [terse hyperlink](#terse-hyperlinks) | `[#clickable content]`, where the clickable content [derives the ID](#comparing-anchor-ids) of an anchor elsewhere. The `#` character is not rendered.
-autolinks | Tokens that match URI syntax and that begin with `http://`, `https://`, and `mailto:` are automatically treated as hyperlinks by intent, unless they are immediately preceded by empty braces, as in `[]http://example.com/dont-make-me-clickable`.
-[simple text anchor](#simple-text-anchors) | `[anchor text]`. ID is [derived from](#comparing-anchor-ids) anchor text.
-[anchor with explicit ID](#explicit-anchor-ids) | `[id: anchor text]`. Only `anchor text` is rendered.
-[hidden or empty anchors](#hidden-or-empty-anchors) | `[id:]`
-[headers as anchors](#headers-as-anchors) | Same as markdown: `# My header` becomes an anchor referencable as `#my-header`. The space after `#` is required. Unlike markdown, IML allows this to be overridden by inserting an explicit ID at the beginning of the header's content: `# [short-id:]My unwieldy header (and humorous aside)`.
-[definition anchor](#definition-text-anchors) | `[=term with definition in surround paragraph]`. Typically referenced with a [terse hyperlink](#terse-hyperlinks).
+autolinks | Tokens that match URI syntax and that begin with `http://`, `https://`, and `mailto:` are automatically rendered as hyperlinks by intent, unless they are immediately preceded by empty braces, as in `[]http://example.com/dont-make-me-clickable`.
+[simple text anchor](#simple-text-anchors) | `[anchor text]`. ID is [derived from](#comparing-anchor-ids) anchor text. Unlike HTML or markdown, IML allows nested anchors (e.g., where a full sentence is an anchor, a word inside the sentence can also be an anchor).
+[anchor with explicit ID](#explicit-anchor-ids) | `[@id: anchor text]`. Only `anchor text` is rendered.
+[hidden or empty anchors](#hidden-or-empty-anchors) | `[@id:]` (nothing is rendered)
+[headers as anchors](#headers-as-anchors) | Same as markdown: `# My header` becomes an anchor referencable as `#my-header`. The space after `#` is required in the header. Unlike markdown, IML allows the ID for a header to be overridden by inserting an explicit ID at the beginning of the header's content: `# [@short-id:]My unwieldy header (and humorous aside)`.
+[definition anchor](#definition-text-anchors) | `[=term with definition in surrounding paragraph]`. For compatibility with other markdown variants, the close bracket may be preceded by an equals sign: `[=term=]`, though this form is deprecated. Typically referenced with a [terse hyperlink](#terse-hyperlinks).
 [code anchors in IPL](#code-anchors) | Automatic from structure; referenced with dotted notation.
-[anchors for media and other complex content](#anchor-pairs) | `[id ...]content[/]`. Unlike HTML, overlapping anchors are supported.
-[disjoint anchors](#disjoint-anchors) | Add a `+` after at least one instance of a repeated explicit ID: `[id+:anchor text]` and/or `[id+ ...]content[/]`. All content with the same ID becomes part of a single disjoint anchor.
+[anchors for media and other complex content](#anchor-pairs) | `[@id ...]content[/]`. Unlike HTML, overlapping anchors are legal, with some caveats.
+[disjoint anchors](#disjoint-anchors) | Use the same ID more than once. Add a `+` after at least one instance of the repeated explicit ID to clarify that this is intentional: `[@id+:anchor text]` and/or `[@id+ ...]content[/]`. All content with the same ID becomes part of a single disjoint anchor.
 
 ### Anchors
 
@@ -24,7 +33,7 @@ An anchor is a target for a hyperlink -- something we can point *at*. It may be 
 
 #### Simple text anchors
 
-The most common thing to point at in intent is text, and the simplest way to make it a pointable target is to enclose it in square brackets. For example, the following paragraph defines anchors around two terms, so they can be referenced elsewhere:
+The most common thing to point at in intent is text, and the simplest way to make it a pointable target is to enclose it in square brackets. For example, the following paragraph defines anchors around "Magnetic resonance imaging" and "MRI", so they can be referenced elsewhere:
 
 ```iml
 [Magnetic resonance imaging] ([MRI]) is a medical imaging
@@ -32,13 +41,13 @@ technique used in radiology to form pictures of the anatomy
 and the physiological processes of the body.
 ```
 
-__Anchor text__ like "Magnetic resonance imaging" in the example above is intended to be visualized inline with the text that surrounds it -- probably un-stylized, and certainly without the square brackets. Enclosing it in square brackets simply delimits the region of the text that can be pointed to:
+__Anchor text__ is intended to be visualized inline with the text that surrounds it -- probably un-stylized, and certainly without the square brackets. Enclosing it in square brackets simply delimits the region of the text that can be pointed to:
 
 ![simple text anchors](../assets/simple-text-anchors.png)
 
 #### Anchor IDs
 
-Each anchor defines one (or more) __anchor IDs__. This is a short, memorable string that uniquely identifies the anchor within its container.
+Each anchor defines one (or more) __anchor IDs__ -- a short, memorable string that uniquely identifies the anchor within its container.
 
 ##### Implicit anchor IDs
 
@@ -46,13 +55,13 @@ The easiest way to define the ID of an anchor is to leave it implicit -- let it 
 
 ##### Explicit anchor IDs
 
-It is also possible to customize the ID for an anchor using a more verbose __explicit ID syntax__: `[id: anchor text]`. For example:
+It is also possible to customize the ID for an anchor using a more verbose __explicit ID syntax__: `[+id: anchor text]`. For example, the following IML defines a short ID instead of the one that would have been derived from a longer phrase:
 
 ```i
-The [ww2history: history of World War II] is long and complex.
+The [+ww2history: history of World War II] is long and complex.
 ```
 
-The `id:` prefix can also be added to hyperlinks, making them anchors even as they point elsewhere.
+The `+id:` prefix can also be prepended to the bracketed data inside normal or terse hyperlinks, making the hyperlinks anchors even as they point elsewhere. This can be useful in endnotes.
 
 ##### ID variants
 
@@ -60,7 +69,7 @@ The same anchor can have multiple ID variants; see [Definition Anchors &gt; Infl
 
 ##### Comparing anchor IDs
 
-Whether anchor IDs are implicit or explicit, intent recognizes and compares them in a way that makes them convenient and robust for humans. Minor details are ignored: ID values are trimmed, converted to lower case, and have all runs of punctuation and/or spaces replaced with a single hyphen. This means that the anchor id `MRI` could also be written as `mri`. And this contrived example of an ugly ID:
+Whether anchor IDs are implicit or explicit, intent recognizes and compares them in a way that makes them convenient and robust for humans who might capitalize, space, or punctuate inconsistently. Minor details are ignored: ID values are trimmed, converted to lower case, and have all runs of punctuation and/or spaces replaced with a single hyphen. This means that the anchor id `MRI` could also be written as `mri`. And this contrived example of a really messy ID:
 
     He won't -- or shouldn't, anyway! -- say "Get lost."
 
@@ -68,13 +77,13 @@ Whether anchor IDs are implicit or explicit, intent recognizes and compares them
 
     he-won-t-or-shouldn-t-anyway-say-get-lost
 
-The lower kabob-case form is canonical. However, variants of this ID that are just capitalized or punctuated differently will also be seen as equivalent.
+The lower kabob-case form is canonical and preferred. However, variants of this ID that are just capitalized or punctuated differently will also be seen as equivalent.
 
-In addition, *references* to IDs can be abbreviated with an `*` wildcard, as long as the portion of the ID that remains is unambiguous. In most containers, the long ID above could probably be referenced as `He won't*` or `* say 'Get lost'` or even `he*get-lost`.
+In addition, *references* to IDs can be abbreviated with an `*` wildcard, as long as the portion of the ID that remains is unambiguous. In most containers, the long ID above could probably be referenced as `He won't*` or `* say 'Get lost'` or even `he*get-lost`. This lets IDs be as long as is natural -- but lets references be much terser.
 
 #### Hidden or empty anchors
 
-Sometimes the intent is to anchor a location, rather than anchoring visible content. For example, you might want to point between two words to show someone where a missing piece of content belongs. To do this, simply insert an explicit anchor ID without any anchor text:
+Sometimes the intent is to anchor a *location*, rather than anchoring *visible content*. For example, you might want to point between two words to show someone where a missing piece of content belongs. To do this, simply insert an explicit anchor ID without any anchor text:
 
 ```i
 running text[insert-here:] more running text
@@ -112,11 +121,13 @@ In certain circumstances, an [#MRI] provides diagnostic insight that is unavaila
 
 But what if we wanted to make our term reference plural: "MRIs provide diagnostic insight..."? Now our clickable term ends with `-s`, whereas its definition is the uninflected singular form... There are two solutions: 
 
-* Add __ID variants__ to the anchor: In the definition anchor, do something like this: `[=MRI[id:MRIs]]`; intent renders only the first form in the *in situ* context, but will accept all others as equally valid variants in references. Variants can include the `*` wildcard; `[=invoking|invoc*|invok*]` creates ID variants that match any form of the verb `invoke`.
+* Add __ID variants__ to the anchor: In the definition anchor, do something like this: `[id:MRIs: MRI]`. Intent treats evything will render only the first form in the *in situ* context, but will accept all others as equally valid variants in references. Variants can include the `*` wildcard; `[=invoking|invoc*|invok*]` creates ID variants that match any form of the verb `invoke`.
 
     >Note 1: It also creates some nonsense possibilities like accidentally mapping `[#invoc-o-matic]` to the `invoc*` anchor -- but since the author chooses whether to insert such references, and since definition references can only point at definition anchors, there's little practical difficulty with the fuzzy target.
 
     >Note 2: ID variants are not currently supported for anything except definition anchors. Perhaps they will be supported elsewhere in the future. 
+
+>   >Note 3: This syntax does not allow the pipe character to be part of the  
 
 * Just use a traditional hyperlink in the `[clickable text](#id)` form:
 
@@ -190,61 +201,42 @@ That then I scorn to change my state with [c+:kings].
 
 ### Hyperlinks
 
-A hyperlink is an expression in the form `[@ref|clickable content]`, where `id` is optional and has the same semantics as with anchors (allowing a hyperlink to also be an anchor itself), `anchor` is a target bracketed elsewhere, and `clickable content` is the text or graphic that would be rendered as blue underlined text if the hyperlink were HTML. Additional params--`target` and `base`--can be added between `anchor` and `linked text` using `;` + whitespace, as in:
+A hyperlink is an expression in the form `[+id: clickable content](ref)`, where `+id: ` is optional and has the same semantics as with anchors (allowing a hyperlink to also be an anchor itself), `ref` is an ID defined elsewhere, and `clickable content` is the text or graphic that would be rendered as blue underlined text if the hyperlink were HTML. Additional params--`target` and `base`--can be added between `anchor` and `linked text` using `;` + whitespace, as in:
 
 ```i
-[@https://www.example.com/a/b; target=_blank; rel=author|clickable text]
+[clickable text](https://www.example.com/a/b; target=_blank; rel=author)
 ```
 
-Hyperlinks to simple textual anchors can be shortened so they look like those anchors with an `@` in front of them. To refer to the MRI term from our example above, running text might contain the following hyperlink:
+The expression in the parenthesized portion of the hyperlink can be any relative or absolute URI, including a document fragment like `#fragment`).
+
+#### Terse Hyperlinks
+Imagine that, somewhere near the end of our imaginary IML document about MRIs, we include the following sentence that refers back to the place where our term was defined:
 
 ```i
-You need to get an [@MRI] as soon as possible.
+[Magnetic resonance imaging](#magnetic-resonance-imaging) is often expensive.
+```
+
+This works -- but notice how verbose it is. For situations like this, we take advantage of intent's support for fuzzy ID matching, and write a terse form instead:
+
+```i
+[#Magnetic resonance imaging] is often expensive.
 ```  
 
+This combines the referenced ID and the clickable text, making the parenthesized portion of the hyperlink unnecessary. Intent normalizes the bracketed phrase to `magnetic-resonance-imaging` to resolve the hyperlink.
+
+Terse hyperlink are both easier to write and easier to read. Their use is encouraged, where they make sense.
+
+#### Paired Hyperlinks
 Hyperlinks also support a paired variant that follows the same rules as anchors:
 
 ```i
-[@https://a.b.com/c; target=_blank ...]clickable content[/] 
+[](@https://a.b.com/c; target=_blank ...)clickable content[/] 
 ```
 
 ...or:
 
 ```i
-[sample@https://a.b.com/c; target=_blank ...]clickcable content[/sample]
+[+id:x](https://a.b.com/c; target=_blank ...)clickcable content[/x]
 ```
-
-## Interjections
-
-An interjection lets authors manage linked content where it is convenient to create and maintain -- but display it somewhere else. Interjections are intent's way of dealing with things like footnotes, endnotes, callouts, and similar assets. In an editor, interjections are defined inline: inside, next to, or near the content they enhance. However, they may render in an entirely different place such as a footer or an appendix.
-
-An interjection may have one or more __display points__ where its content or some subset or transformation thereof is rendered. 
-
-A display point for interjection is defined with an expression in the form `[^@id: anchor content]`, where `id` is a formal identifier for the interjection.
-
-The interjected content (e.g., the text of a footnote, the diagram) is defined at a __definition point__. This may be an anchor in the form `[^id: interjected content]`, or a formally named block that has a type, marks, and other properties. In the latter case, the block should carry the `+interject` mark to indicate that it is not to be displayed as part of the running context.
-
-Suppose you are using intent to write about some product requirements, and you want to add a footnote about . You might do it like this:
-
-```i
-We need to make sure that we consider accessibility. Some of our
-customers [^@1: say] that they won't buy unless the product is
-usable by the visually impaired.
-
-[^1: See the focus group done in Sep 2019.]
-```
-
-You could also do it like this:
-
-```i
-We need to make sure that we consider accessibility. Some of our
-customers [^@1: say] that they won't buy unless the product is
-usable by the visually impaired.
-
-^1: footnote
-    See the focus group done in Sep 2019.
-```
-
-
 
 
