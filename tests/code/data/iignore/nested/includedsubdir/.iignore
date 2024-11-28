@@ -1,0 +1,4 @@
+# undo ignoring of *.i in parent
+!*.i
+# also ignore *.json
+*.json
