@@ -2,6 +2,8 @@ import os
 from typing import Optional
 import pathspec
 
+__all__ = ['Space', 'HierarchicalDotIIgnore', 'DOT_IGNORE_NAME']
+
 DOT_IGNORE_NAME = '.iignore'
 
 def canonical_path(path):

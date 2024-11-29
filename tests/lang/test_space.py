@@ -7,7 +7,7 @@ IIGNORE_DIR = os.path.join(DATA_DIR, 'iignore')
 IIGNORE_NOIGNORES_DIR = os.path.join(IIGNORE_DIR, 'noignores')
 IIGNORE_SOMEIGNORES_DIR = os.path.join(IIGNORE_DIR, 'someignores')
 
-from intent.code.space import Space, HierarchicalDotIIgnore
+from intent.lang.env import Space, HierarchicalDotIIgnore
 
 @pytest.fixture
 def space1():
