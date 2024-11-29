@@ -7,7 +7,8 @@ SYNTAX = argparse.ArgumentParser(prog='i', description="Work with intent code.")
 CMDS = SYNTAX.add_subparsers(dest='cmd', required=True, help="Commands")
 
 compile_syntax = CMDS.add_parser('compile', help="Compile code.")
-#fix_syntax.add_argument('--count', type=int, default=1, help="Number of times to run.")
+compile_syntax.add_argument('what', type=str, nargs='*', help="space, package, or module")
+
 fix_syntax = CMDS.add_parser('fix', help="Fix warnings.")
 #fix_syntax.add_argument('--count', type=int, default=1, help="Number of times to run.")
 ignore_syntax = CMDS.add_parser('ignore', help="Modify .iignore.")

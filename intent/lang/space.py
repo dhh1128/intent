@@ -158,6 +158,12 @@ class Space:
     def should_ignore(self, item_name):
         return False
     
+    def compile(self):
+        """
+        Compile the space into a form that can be used by the intent engine.
+        """
+        pass
+    
     def walk(self, topdown=True, onerror=None, followlinks=False, 
              match_file=any, match_dir=any, recurse_dir=any, 
              include_ignored=False):
