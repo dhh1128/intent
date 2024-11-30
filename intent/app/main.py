@@ -18,7 +18,15 @@ ignore_syntax = CMDS.add_parser('ignore', help="Modify .iignore.")
 args = SYNTAX.parse_args()
 
 def compile(args):
-    print("compiling")
+    for item in args.what:
+        if item == "space":
+            print("compiling space")
+        elif item == "package":
+            print("compiling package")
+        elif item == "module":
+            print("compiling module")
+        else:
+            print("nothing to compile")
 
 def main():
     func = globals().get(args.cmd)
