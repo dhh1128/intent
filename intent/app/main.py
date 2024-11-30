@@ -1,8 +1,7 @@
 import argparse
-import sys
-import types
 
 from ..lang.parts.space import Space
+from .ui import ui, ArgparseFormatter
 
 __all__ = ['main']
 
@@ -27,10 +26,10 @@ def init(args):
 def help(args):
     syntax: argparse.ArgumentParser = globals().get(args.command + '_syntax')
     if not syntax:
-        raise CmdlineSyntaxError(f"Unrecognized command {args.command}.")
+            raise CmdlineSyntaxError(f'Unrecognized command "{args.command}".')
     syntax.print_help()
 
-syntax = argparse.ArgumentParser(prog='i', description="Work with intent code.", add_help=False)
+syntax = argparse.ArgumentParser(prog='i', description="Work with intent code.", add_help=False, formatter_class=ArgparseFormatter)
 syntax.add_argument('-h', '--help', '--H', '-?', action='help', default=argparse.SUPPRESS,
                 help='Show this help message and exit.')
 syntax.add_argument('--verbose', '-v', action='store_true', help='Enable verbose mode.')
@@ -61,7 +60,7 @@ def main():
         else:
             raise CmdlineSyntaxError(f'Unrecognized command "{args.func}".')
     except CmdlineSyntaxError as e:
-        sys.stderr.write(str(e) + '\n')
+        ui.err(e)
         show_syntax = True
 
     if show_syntax:
