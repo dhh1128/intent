@@ -1,21 +1,14 @@
 import argparse
+import sys
+import types
 
-# This is the only stuff we want to expose.
+from ..lang.parts.space import Space
+
 __all__ = ['main']
 
-SYNTAX = argparse.ArgumentParser(prog='i', description="Work with intent code.")
-CMDS = SYNTAX.add_subparsers(dest='cmd', required=True, help="Commands")
-
-compile_syntax = CMDS.add_parser('compile', help="Compile code.")
-compile_syntax.add_argument('what', type=str, nargs='*', help="space, package, or module")
-
-fix_syntax = CMDS.add_parser('fix', help="Fix warnings.")
-#fix_syntax.add_argument('--count', type=int, default=1, help="Number of times to run.")
-ignore_syntax = CMDS.add_parser('ignore', help="Modify .iignore.")
-#ignore_syntax.add_argument('--count', type=int, default=1, help="Number of times to run.")
-
-# Parse the arguments passed to the program
-args = SYNTAX.parse_args()
+class CmdlineSyntaxError(Exception):
+    def __init__(self, msg: str):
+        super().__init__(msg)
 
 def compile(args):
     for item in args.what:
@@ -28,12 +21,51 @@ def compile(args):
         else:
             print("nothing to compile")
 
+def init(args):
+    Space.init(args.where)
+
+def help(args):
+    syntax: argparse.ArgumentParser = globals().get(args.command + '_syntax')
+    if not syntax:
+        raise CmdlineSyntaxError(f"Unrecognized command {args.command}.")
+    syntax.print_help()
+
+syntax = argparse.ArgumentParser(prog='i', description="Work with intent code.", add_help=False)
+syntax.add_argument('-h', '--help', '--H', '-?', action='help', default=argparse.SUPPRESS,
+                help='Show this help message and exit.')
+syntax.add_argument('--verbose', '-v', action='store_true', help='Enable verbose mode.')
+commands = syntax.add_subparsers(dest='func', required=True, help="Commands")
+
+compile_syntax = commands.add_parser('compile', help="Compile code.")
+compile_syntax.add_argument('what', type=str, metavar='WHAT', nargs='*', help="space, package, or module")
+
+init_syntax = commands.add_parser('init', help="Init a space, or plug gaps in partly inited space.")
+init_syntax.add_argument('where', default='.', type=str, nargs='?', help="existing folder to init as space")
+init_syntax.add_argument('--force', action='store_true', help='Create even when location appears wrong.')
+
+ignore_syntax = commands.add_parser('ignore', help="Modify .iignore.")
+#ignore_syntax.add_argument('--count', type=int, default=1, help="Number of times to run.")
+
+help_syntax = commands.add_parser('help', help="Display help on a specific command.")
+help_syntax.add_argument('command', type=str, metavar='CMD', nargs='?', help="which command")
+
 def main():
-    func = globals().get(args.cmd)
-    if func:
-        func(args)
-    else:
-        SYNTAX.print_help()
+    # Parse the arguments passed to the program
+    args = syntax.parse_args()
+
+    show_syntax = False
+    func = globals().get(args.func)
+    try:
+        if func:
+            func(args)
+        else:
+            raise CmdlineSyntaxError(f'Unrecognized command "{args.func}".')
+    except CmdlineSyntaxError as e:
+        sys.stderr.write(str(e) + '\n')
+        show_syntax = True
+
+    if show_syntax:
+        syntax.print_help()
 
 if __name__ == "__main__":
     main()
