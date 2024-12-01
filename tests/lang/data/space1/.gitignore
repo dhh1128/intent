@@ -1,0 +1,89 @@
+
+# General OS and editor
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*.bak
+*.tmp
+~*
+
+# IDE-specific files
+.idea/
+.vscode/
+*.code-workspace
+*.sublime-workspace
+*.sublime-project
+*.log
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+env/
+*.egg-info/
+.eggs/
+build/
+dist/
+.ipynb_checkpoints/
+.cache/
+*.pytest_cache/
+htmlcov/
+.coverage
+.coverage.*
+.mypy_cache/
+
+# Rust
+target/
+*.rs.bk
+*.profraw
+
+# JavaScript / Node.js / React
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log
+.eslintcache
+.next/
+out/
+dist/
+coverage/
+
+# React Native
+ios/
+android/
+*.xcworkspace/
+*.xcodeproj/
+*.gradle/
+*.apk
+*.keystore
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+*.iml
+*.log
+target/
+.gradle/
+build/
+.project
+.classpath
+.settings/
+bin/
+
+# Go
+*.exe
+*.dll
+*.so
+*.dylib
+bin/
+*.test
+go.sum
+*.out
+
+# Additional Coverage Tools
+lcov-report/
+*.lcov
