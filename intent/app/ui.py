@@ -1,4 +1,5 @@
 import types
+from rich import print
 from rich.console import Console
 from rich.style import Style
 
@@ -8,13 +9,12 @@ warn_style = Style(color="yellow", bold=True)
 ui = Console()
 
 # Monkey patch this object with some extra methods.
-def info(self, msg):
-    self.print(msg)
 def warn(self, msg):
-    self.print(msg, style=warn_style)
+    self.print('[bold yellow]Warning: [/bold yellow]: ' + str(msg))
+
 def err(self, msg):
-    self.print(msg, style=err_style)
-ui.info = types.MethodType(info, ui)
+    self.print('[bold red]Error: [/bold red]: ' + str(msg))
+
 ui.warn = types.MethodType(warn, ui)
 ui.err = types.MethodType(err, ui)
 
