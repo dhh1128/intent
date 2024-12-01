@@ -1,0 +1,22 @@
+#!/bin/bash
+
+ICD_FUNC='
+
+icd() {
+    space_root=$(i root .)
+    if [ -z "$space_root" ]; then
+        echo "No space root found"
+        return
+    fi    
+    cd $space_root/$1
+}
+'
+
+if grep -q "icd()" ~/.bashrc; then
+    echo "icd function appears to be installed already. Run source ~/.bashrc to use."
+else
+    echo -e "$ICD_FUNC" >> ~/.bashrc
+    echo "icd function installed in ~/.bashrc. Run source ~/.bashrc to use."
+fi
+
+
