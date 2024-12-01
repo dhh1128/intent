@@ -36,17 +36,19 @@ syntax.add_argument('-h', '--help', '--H', '-?', action='help', default=argparse
 syntax.add_argument('--verbose', '-v', action='store_true', help='Enable verbose mode.')
 commands = syntax.add_subparsers(dest='func', required=True, help="Commands")
 
-compile_syntax = commands.add_parser('compile', help="Compile code.")
+compile_syntax = commands.add_parser('compile', help="Compile code.", formatter_class=ArgparseFormatter, add_help=False)
 compile_syntax.add_argument('what', type=str, metavar='WHAT', nargs='*', help="space, package, or module")
 
-init_syntax = commands.add_parser('init', help="Init a space, or plug gaps in partly inited space.")
+init_syntax = commands.add_parser('init', help="Init a space, or plug gaps in partly inited space.", formatter_class=ArgparseFormatter, add_help=False)
 init_syntax.add_argument('where', default='.', type=str, nargs='?', help="existing folder to init as space")
 init_syntax.add_argument('--force', action='store_true', help='Create even when location appears wrong.')
 
-ignore_syntax = commands.add_parser('ignore', help="Modify .iignore.")
+root_syntax = commands.add_parser('root', help="Report fq path to root of current space, if it's inited.", formatter_class=ArgparseFormatter, add_help=False)
+
+ignore_syntax = commands.add_parser('ignore', help="Modify .iignore.", formatter_class=ArgparseFormatter, add_help=False)
 #ignore_syntax.add_argument('--count', type=int, default=1, help="Number of times to run.")
 
-help_syntax = commands.add_parser('help', help="Display help on a specific command.")
+help_syntax = commands.add_parser('help', help="Display help on a specific command.", formatter_class=ArgparseFormatter, add_help=False)
 help_syntax.add_argument('command', type=str, metavar='CMD', nargs='?', help="which command")
 
 def main():
@@ -55,19 +57,24 @@ def main():
         print(__version__)
         return
     
-    # Parse the normal arguments passed to the program.
-    args = syntax.parse_args()
-
     show_syntax = False
-    func = globals().get(args.func)
-    try:
-        if func:
-            func(args)
-        else:
-            raise CmdlineSyntaxError(f'Unrecognized command "{args.func}".')
-    except CmdlineSyntaxError as e:
-        ui.err(e)
+    # Treat "i help" as a special case synonym for i --help.
+    if len(sys.argv) == 2 and sys.argv[1] == 'help':
         show_syntax = True
+    else:        
+        # Parse the normal arguments passed to the program.
+        args = syntax.parse_args()
+
+        show_syntax = False
+        func = globals().get(args.func)
+        try:
+            if func:
+                func(args)
+            else:
+                raise CmdlineSyntaxError(f'Unrecognized command "{args.func}".')
+        except CmdlineSyntaxError as e:
+            ui.err(e)
+            show_syntax = True
 
     if show_syntax:
         syntax.print_help()
