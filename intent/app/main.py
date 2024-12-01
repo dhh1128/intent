@@ -1,5 +1,7 @@
 import argparse
+import sys
 
+from ..version import __version__
 from ..lang.parts.space import Space
 from .ui import ui, ArgparseFormatter
 
@@ -30,8 +32,7 @@ def help(args):
     syntax.print_help()
 
 syntax = argparse.ArgumentParser(prog='i', description="Work with intent code.", add_help=False, formatter_class=ArgparseFormatter)
-syntax.add_argument('-h', '--help', '--H', '-?', action='help', default=argparse.SUPPRESS,
-                help='Show this help message and exit.')
+syntax.add_argument('-h', '--help', '--H', '-?', action='help', default=argparse.SUPPRESS, help='Show this help message and exit.')
 syntax.add_argument('--verbose', '-v', action='store_true', help='Enable verbose mode.')
 commands = syntax.add_subparsers(dest='func', required=True, help="Commands")
 
@@ -49,7 +50,12 @@ help_syntax = commands.add_parser('help', help="Display help on a specific comma
 help_syntax.add_argument('command', type=str, metavar='CMD', nargs='?', help="which command")
 
 def main():
-    # Parse the arguments passed to the program
+    # First check for --version.
+    if '--version' in sys.argv:
+        print(__version__)
+        return
+    
+    # Parse the normal arguments passed to the program.
     args = syntax.parse_args()
 
     show_syntax = False

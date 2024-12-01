@@ -1,4 +1,7 @@
-import intent
+from intent.version import __version__
+import re
 
-def test_sample():
-    assert intent.__name__ == 'intent'
+semver_pat = re.compile(r'^\d+\.\d+\.\d+$')
+
+def test_version():
+    assert semver_pat.match(__version__)

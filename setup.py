@@ -1,8 +1,17 @@
 from setuptools import setup, find_packages
 
+from pathlib import Path
+import re
+
+# Read the version from the version.py file.
+verpat = re.compile(r'^__version__[ \t]*=[ \t]*"(.*?)"', re.M)
+version_file = Path(__file__).parent / "intent" / "version.py"
+with open(version_file, "rt") as f:
+    __version__ = verpat.search(f.read()).group(1)
+
 setup(
     name="intent",  # Package name for PyPI
-    version="0.1.0",  # Version of the package
+    version=__version__,
     packages=find_packages(),
     install_requires=[
         'ruamel.yaml~=0.18.6',
