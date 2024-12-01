@@ -4,6 +4,7 @@ import shutil
 import tempfile
 
 DATA_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '../data'))
+SPACE1_DIR = os.path.join(DATA_DIR, 'space1')
 
 class TempFolder:
     def __init__(self) -> None:

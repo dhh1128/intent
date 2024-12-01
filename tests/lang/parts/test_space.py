@@ -4,8 +4,7 @@ import shutil
 
 from intent.lang.parts import Space, HierarchicalDotIIgnore
 
-from .util import DATA_DIR, temp_folder
-SPACE1_DIR = os.path.join(DATA_DIR, 'space1')
+from .util import DATA_DIR, SPACE1_DIR, temp_folder
 
 @pytest.fixture
 def space1():

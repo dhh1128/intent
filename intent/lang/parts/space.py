@@ -49,6 +49,9 @@ class Space:
         """
         pass
 
+    def abs_path_to_rel(self, abs_path: str) -> str:
+        return "/" + os.path.relpath(abs_path, self.path)
+
     def rel_path_to_abs(self, rel_path: str) -> str:
         return canonical_path(os.path.join(self.path, rel_path))
     
