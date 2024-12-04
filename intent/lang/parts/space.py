@@ -7,6 +7,7 @@ OUT_PAT = re.compile(r'^[\t ]*out/', re.MULTILINE)
 
 from .fs import canonical_path, enforced_canonical_folder, folders_back_to_root
 from .iignore import DOT_IGNORE_NAME, DEFAULT_IIGNORE, DEFAULT_GITIGNORE
+from .module import Module
 
 DEFAULT_SPACE_I = '''# Define properties of this space.
 id: {space_id}
@@ -54,6 +55,27 @@ class Space:
 
     def rel_path_to_abs(self, rel_path: str) -> str:
         return canonical_path(os.path.join(self.path, rel_path))
+    
+    def modules(self):
+        """
+        Return a list of all modules in the space.
+        """
+        for root, _, files in self.walk():
+            for file in files:
+                if file.endswith('.i'):
+                    yield Module(os.path.join(root, file))
+
+    def compile(self):
+        """
+        Compile the space into a form that can be used by the intent engine.
+        """
+        asts = []
+        problems = []
+        for module in self.modules():
+            ast, problem = module.compile()
+            if ast: asts.append(ast)
+            if problem: problems.append(problem)
+        return asts, problems
     
     @staticmethod
     def find_root(path: str = '.') -> str:

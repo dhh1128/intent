@@ -1,29 +1,32 @@
 import os
 import weakref
 
-from .space import Space
+import ruamel.yaml as yaml
+
 from .fs import canonical_path
 
-
-
-
 class Module:
-    def __init__(self, path, space: Space=None):
-        path = canonical_path(path)
-        if path.endswith('.i'):
-            self.pre = path[:-2]
-        self.path = path
+    def __init__(self, path, space=None):
+        self.path = canonical_path(path)
+        self.folder, file = os.path.split(self.path)
+        self._files = [file]
+        self.name = file[:-2]
         self._space = weakref.ref(space) if space else None
-    
-    @property
-    def name(self):
-        return os.path.split(self.path)[1][:-2]
+
+    def files(self):
+        return self._files
 
     @property
     def space(self):
         return self._space() if self._space else None
 
     @property
-    def rel_path(self):
+    def sid(self):
+        """The identifier of this module, within its space."""
         s = self.space
-        return s.abs_path_to_rel(self.path) if s else None
+        return s.abs_path_to_rel(self.path)[:-2] if s else None
+    
+    def compile(self):
+        ast = yaml.YAML(typ='rt')
+        ast.load(self.path)
+        return ast, None
