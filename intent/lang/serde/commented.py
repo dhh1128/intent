@@ -1,15 +1,17 @@
 import ast
+from enum import Enum
 import warnings
 import re
 
 INVALID_ESC_SEQ_PAT = re.compile(r"invalid escape sequence [\"']\\.[\"']")
-DICT_KEY = 0
-DICT_VALUE = 1
-LIST_VALUE = 2
-LAST_ITEM = 3
-COMMENTEDVALUE_MODES = [DICT_KEY, DICT_VALUE, LIST_VALUE, LAST_ITEM]
 
-__all__ = ["CommentedChunk", "CommentedList", "CommentedDict", "DICT_KEY", "DICT_VALUE", "LIST_VALUE", "LAST_ITEM"]
+class CCMode(Enum):
+    DICT_KEY = 0
+    DICT_VALUE = 1
+    LIST_VALUE = 2
+    LAST_ITEM = 3
+
+__all__ = ["CommentedChunk", "CommentedList", "CommentedDict", "CCMode"]
 
 def index_first_non_space_char(s):
     for i, c in enumerate(s):
@@ -90,8 +92,16 @@ class CommentedChunk:
     The str value of a CommentedChunk is the chunk by itself, disregarding all other
     properties.
     """
-    def __init__(self, mode: int, above: str = None, pre: str = None, chunk: str = None, 
-                 divider: str = None, post: str = None):
+    above: str 
+    pre: str # leading indent, plus quote char if chunk is quoted
+    chunk: str # the string value as it appears in code
+    interpreted_chunk: str # the string value with escape sequences interpreted
+    divider: str # space after chunk, preceded by quote char if chunk is quoted
+    post: str
+    mode: CCMode
+
+    def __init__(self, mode: CCMode, above: str = None, pre: str = None,
+                 chunk: str = None, divider: str = None, post: str = None):
         """
         Initialize a CommentedChunk.
         
@@ -106,15 +116,18 @@ class CommentedChunk:
         or if args don't match mode.
         """
         # Check mode-related preconditions.
-        if mode not in COMMENTEDVALUE_MODES:
-            raise ValueError(f"Invalid mode {mode}.")
+        if isinstance(mode, int):
+            try:
+                mode = CCMode(mode)
+            except:
+                raise ValueError(f"Invalid mode {mode}.")
         if not divider:
-            if mode == DICT_KEY:
-                raise ValueError("Mode can't be DICT_KEY without : in divider.")
+            if mode == CCMode.DICT_KEY:
+                raise ValueError(f"Mode can't be {mode.name} without : in divider.")
             if above:
                 if not chunk and not pre and not post:
-                    if mode != LAST_ITEM:
-                        raise ValueError("With only above, mode must be LAST_ITEM.")
+                    if mode != CCMode.LAST_ITEM:
+                        raise ValueError(f"With only above, mode must be {CCMode.LAST_ITEM.name}.")
             else:
                 if not chunk and not pre and not post:
                     raise ValueError("Can't be empty of all content.")
@@ -123,21 +136,21 @@ class CommentedChunk:
                     raise ValueError("Can't have post without divider.")
         else:
             if ":" in divider:
-                if mode != DICT_KEY:
-                    raise ValueError("Mode must be DICT_KEY with : in divider.")
+                if mode != CCMode.DICT_KEY:
+                    raise ValueError(f"Mode must be {CCMode.DICT_KEY.name} with : in divider.")
             else:
                 if above:
-                    if mode != LIST_VALUE:
-                        raise ValueError("Mode must be LIST_VALUE with above but not : in divider.")
-                elif mode == DICT_KEY:
-                    raise ValueError("Mode can't be DICT_KEY without : in divider.")
+                    if mode != CCMode.LIST_VALUE:
+                        raise ValueError(f"Mode must be {CCMode.LIST_VALUE.name} with above but not : in divider.")
+                elif mode == CCMode.DICT_KEY:
+                    raise ValueError(f"Mode can't be {mode.name} without : in divider.")
         # Do special handling of chunk, which might be quoted and escaped.
         if chunk:
             first_chunk_char = chunk[0]
             if first_chunk_char in '\'"':
                 if chunk[-1] != first_chunk_char:
                     raise ValueError("unbalanced quotes on chunk.")
-                self.chunk = chunk
+                self.chunk = chunk[1:-1]
                 try:
                     self.interpreted_chunk = safe_literal_eval(chunk)
                 except SyntaxWarning as e:
@@ -156,6 +169,7 @@ class CommentedChunk:
 
     @property
     def quote_char(self):
+        """Returns the quote character encompassing the chunk, if any."""
         return self.pre[-1] if self.pre[-1] in '\'"' else None
 
     @staticmethod
@@ -174,8 +188,18 @@ class CommentedChunk:
         """
         pre_offset = index_first_non_space_char(line)
         pre = line[:pre_offset]
-        if mode == DICT_KEY:
-            i = line.find(":", pre_offset)
+        c = line[pre_offset]
+        # Figure out where to start looking for comment. If we have a quoted value,
+        # skip to the end quote. Otherwise, begin looking right where we are.
+        if c in '\'"':
+            j = line.find(c, pre_offset + 1)
+            if j == -1:
+                raise ValueError("No closing quote.")
+            j += 1
+        else:
+            j = pre_offset
+        if mode == CCMode.DICT_KEY:
+            i = line.find(":", j)
             if i == -1:
                 raise ValueError("No : found in line.")
             # divider should be any spaces before :, plus the : char itself
@@ -183,7 +207,7 @@ class CommentedChunk:
             divider = line[divider_begin:i+1]
             return CommentedChunk(above=above, pre=pre, chunk=line[pre_offset:divider_begin], divider=divider, mode=mode)
         else:
-            i = line.find("#", pre_offset)
+            i = line.find("#", j)
             if i == -1:
                 # divider should be any spaces between the end of the value and the end of line
                 divider_begin = beginning_of_left_pad_before(line, len(line))
@@ -197,9 +221,13 @@ class CommentedChunk:
         
     @property
     def text(self):
+        # Return the chunk and all its surrounding text, as it appears in code.
         return self.above + self.pre + self.chunk + self.divider + self.post
 
     def __str__(self):
+        # Return the chunk by itself, disregarding all other properties,
+        # and with escape sequences interpreted. This may differ from how the
+        # chunk appears in code, if it is quoted.
         return self.interpreted_chunk
 
     def __repr__(self):
@@ -207,24 +235,28 @@ class CommentedChunk:
     
     def __eq__(self, value: object) -> bool:
         return self.interpreted_chunk == value
+    
+    def __lt__(self, other):
+        if not isinstance(other, CommentedChunk):
+            if isinstance(other, str):
+                return self.interpreted_chunk < other
+            return NotImplemented
+        return self.interpreted_chunk < other.interpreted_chunk  # Compare based on the `data` attribute.
+
+def guarantee_non_empty_ends_with_new_line(txt):
+    return txt + "\n" if (txt and not txt.endswith("\n")) else txt
 
 class CommentedList(list):
-    def __init__(self, *args):
-        super().__init__(*args)
-
     @property
     def text(self):
         """
         Returns a string representation of the list, including comments.
         """
-        return "\n".join(item.text if isinstance(item, CommentedChunk) else str(item) for item in self)
+        txt = "\n".join(item.text if isinstance(item, CommentedChunk) else str(item) for item in self)
+        txt = guarantee_non_empty_ends_with_new_line(txt)
+        return txt
 
 class CommentedDict(dict):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # Store comments associated with keys
-        self._comments = {}
-
     @property
     def text(self):
         """
@@ -234,4 +266,6 @@ class CommentedDict(dict):
         for key, value in self.items():
             ktext = key.text if isinstance(key, CommentedChunk) else key
             lines.append(f"{ktext}: {value.text if isinstance(value, CommentedChunk) else value}")
-        return "\n".join(lines)
+        txt = "\n".join(lines)
+        txt = guarantee_non_empty_ends_with_new_line(txt)
+        return txt
