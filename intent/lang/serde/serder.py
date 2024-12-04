@@ -1,123 +1,104 @@
-from typing import NamedTuple
-from commented import CommentedDict, CommentedList, CommentedValue
+from .commented import CommentedDict, CommentedList, CommentedChunk
 
 __all__ = ["load", "dump", "Value"]
 
-
-class Value:
-    def __init__(self, value, meta=None, comment=None):
-        self.value = value
-        self.meta = meta
-        self.comment = comment
-
-    @property
-    def is_list(self):
-        return isinstance(self.value, list)
-    
-    @property
-    def is_dict(self):
-        return isinstance(self.value, dict)
-    
-    @property
-    def is_primitive(self):
-        return not (self.is_list or self.is_dict)
-    
-    def __str__(self):
-        txt = str(self.meta) + " " if self.meta else ""
-        if self.is_primitive:
-            txt += str(self.value)
-        if self.comment:
-            txt += self.comment
-        if self.is_list:
-            sep = "\n  - "
-            txt += sep + sep.join([str(v) for v in self.value])
-        elif self.is_dict:
-            sep = "\n  "
-            txt += sep + sep.join([f"{k}: {v}" for k, v in self.value.items()])
-        return txt
-    
-class KeyValuePair(NamedTuple):
-    key: str
-    value: Value
-
-def parse_leading_whitespace(line: str, line_num, last_indent) -> tuple:
-    for i, c in enumerate(line):
-        if c != ' ':
-            break
+def parse_indent(data: str, offset: int, end: int, line_num: int, last_indent: int) -> tuple:
+    i = offset
+    while i < end:
+        c = data[i]
+        if c != ' ': break
+        i += 1
+    indent = i - offset
     if c == '\t':
         raise ValueError(f"Invalid indent (tab) on line {line_num}. Only 2-space indents are allowed.")
-    elif i % 2 == 1:
-        raise ValueError(f"Bad indent ({i} spaces) on line {line_num}. Only 2-space indents are allowed.")
-    elif i > last_indent + 2:
-        raise ValueError(f"Too indented ({i} spaces) on line {line_num}. Expected max {last_indent + 2}.")
+    elif indent % 2 == 1:
+        raise ValueError(f"Bad indent ({indent} spaces) on line {line_num}. Only 2-space indents are allowed.")
+    elif indent > last_indent + 2:
+        raise ValueError(f"Too indented ({indent} spaces) on line {line_num}. Expected max {last_indent + 2}.")
     else:
         return i
-    
-def load(data: str) -> dict:
+def load(data: str) -> dict: pass
+def dump(data: dict) -> str: pass
+class Value: pass
+"""
     result = {}
     nested = [result]
     obj = None
     line_num = 0
     last_indent = 0
     last_key = None
-    for line in data.split("\n"):
+    head = None
+    line_start = 0
+    end = len(data)
+    while line_start < end:
         line_num += 1
-        if not line: continue
-        # Consume whitespace and complain if something's wrong with it.
-        indent = parse_leading_whitespace(line, line_num, last_indent)
-        c = line[indent]
-        if c == "#": 
-            continue
-        elif c in "\r\n": 
-            continue
-        elif c == '-':
-            if obj is None or isinstance(obj, dict):
-                raise ValueError(f"Unexpected list item on line {line_num}.")
-            if indent == last_indent:
-                if obj is None: obj = nested.pop() # first key:value pair for this obj
-                if isinstance(obj, list):
-                    obj.append({key: value})
-                obj[key] = value
-            elif indent == last_indent + 2:
-                if obj is None:
-                    raise ValueError(f"Premature indent on line {line_num}.")
-                if c == '-':
-                    if not isinstance(obj[last_key], list):
-                        obj[last_key] = []
-                    obj[last_key].append(value)
-                else:
-                    obj.append(line[indent + 1:].lstrip())
+        line_end = data.find("\n", line_start)
+        if line_end == -1: line_end = end
+        line = data[line_start:line_end + 1]
+        # Analyze leading whitespace and complain if something's wrong with it.
+        end_of_indent = parse_indent(line, line_start, end, line_num, last_indent)
+        if end_of_indent == end: # line of pure spaces
+            head += line
         else:
-            colon = line.find(":", indent)
-            if colon == -1:
-                raise ValueError(f"No key: value pattern on line {line_num}.")
-            key = line[indent:colon].rstrip()
-            value = line[colon + 1:].lstrip()
-            if indent == last_indent:
-                if obj is None: obj = nested.pop() # first key:value pair for this obj
-                if isinstance(obj, list):
-                    obj.append({key: value})
-                obj[key] = value
-            elif indent == last_indent + 2:
-                if obj is None:
-                    raise ValueError(f"Premature indent on line {line_num}.")
-                if c == '-':
-                    if not isinstance(obj[last_key], list):
-                        obj[last_key] = []
-                    obj[last_key].append(value)
-                else:
-                    container = {}
-                    obj[last_key] = container
-                obj = container
-                nested.append(obj)
-                obj[key] = value
+            c = data[end_of_indent]
+            indent = end_of_indent - line_start
+            # comment or empty line ?
+            if c in "#\r": 
+                head += line
+            # list item?
+            elif c == '-':
+                if isinstance(obj, dict):
+                    raise ValueError(f"Expected key: value instead of list item on line {line_num}.")
+                if indent == last_indent:
+                    # If this is the first item in the list, pop last obj from stack.
+                    if obj is None:
+                        obj = nested.pop()
+                        if isinstance(obj, CommentedChunk): pass
+                    if isinstance(obj, list):
+                        obj.append({key: value})
+                    obj[key] = value
+                elif indent == last_indent + 2:
+                    if obj is None:
+                        raise ValueError(f"Premature indent on line {line_num}.")
+                    if c == '-':
+                        if not isinstance(obj[last_key], list):
+                            obj[last_key] = []
+                        obj[last_key].append(value)
+                    else:
+                        obj.append(line[indent + 1:].lstrip())
             else:
-                while indent < last_indent:
-                    obj = nested.pop()
-                    last_indent -= 2
-                obj[key] = value
-            last_key = key
+                colon = line.find(":", indent)
+                if colon == -1:
+                    raise ValueError(f"No key: value on line {line_num}.")
+                key = CommentedChunk.from_line(line[:colon], head)
+                value = CommentedChunk.from_line(line[colon + 1:])
+                if indent == last_indent:
+                    if obj is None: obj = nested.pop() # first key:value pair for this obj
+                    if isinstance(obj, list):
+                        obj.append({key: value})
+                    obj[key] = value
+                elif indent == last_indent + 2:
+                    if obj is None:
+                        raise ValueError(f"Premature indent on line {line_num}.")
+                    if c == '-':
+                        if not isinstance(obj[last_key], list):
+                            obj[last_key] = []
+                        obj[last_key].append(value)
+                    else:
+                        container = {}
+                        obj[last_key] = container
+                    obj = container
+                    nested.append(obj)
+                    obj[key] = value
+                else:
+                    while indent < last_indent:
+                        obj = nested.pop()
+                        last_indent -= 2
+                    obj[key] = value
+                last_key = key
+        line_start = line_end + 1
     return result
 
 def dump(data: dict) -> str:
     pass
+"""
