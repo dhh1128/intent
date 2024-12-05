@@ -3,6 +3,8 @@ from enum import Enum
 import warnings
 import re
 
+from .code import Code
+
 INVALID_ESC_SEQ_PAT = re.compile(r"invalid escape sequence [\"']\\.[\"']")
 
 class CCMode(Enum):
@@ -46,8 +48,11 @@ def beginning_of_left_pad_before(line, i):
     while j >= 0 and line[j] == ' ':
         j -= 1
     return j + 1
-        
-class CommentedChunk:
+
+def guarantee_non_empty_ends_with_new_line(txt):
+    return txt + "\n" if (txt and not txt.endswith("\n")) else txt
+
+class CommentedChunk(Code):
     """
     Represent a single chunk of text that may be preceded by an "above" (one or more
     blank lines or comments and an optional "pre" (leading spaces on the same line) --
@@ -220,7 +225,7 @@ class CommentedChunk:
                 return CommentedChunk(above=above, pre=pre, chunk=line[pre_offset:divider_begin], divider=line[divider_begin:i], post=line[i:], mode=mode)
         
     @property
-    def text(self):
+    def code(self):
         # Return the chunk and all its surrounding text, as it appears in code.
         return self.above + self.pre + self.chunk + self.divider + self.post
 
@@ -243,29 +248,34 @@ class CommentedChunk:
             return NotImplemented
         return self.interpreted_chunk < other.interpreted_chunk  # Compare based on the `data` attribute.
 
-def guarantee_non_empty_ends_with_new_line(txt):
-    return txt + "\n" if (txt and not txt.endswith("\n")) else txt
-
-class CommentedList(list):
+class CommentedList(Code, list):
     @property
-    def text(self):
+    def code(self) -> str:
         """
         Returns a string representation of the list, including comments.
         """
-        txt = "\n".join(item.text if isinstance(item, CommentedChunk) else str(item) for item in self)
+        txt = "\n".join(item.code if isinstance(item, CommentedChunk) else str(item) for item in self)
         txt = guarantee_non_empty_ends_with_new_line(txt)
         return txt
 
-class CommentedDict(dict):
+class CommentedDict(Code, dict):
     @property
-    def text(self):
+    def code(self) -> str:
         """
         Returns a string representation of the dict, including comments.
         """
         lines = []
         for key, value in self.items():
-            ktext = key.text if isinstance(key, CommentedChunk) else key
-            lines.append(f"{ktext}: {value.text if isinstance(value, CommentedChunk) else value}")
+            ktext = key.code if isinstance(key, CommentedChunk) else key
+            lines.append(f"{ktext}: {value.code if isinstance(value, CommentedChunk) else value}")
         txt = "\n".join(lines)
         txt = guarantee_non_empty_ends_with_new_line(txt)
         return txt
+    
+class Expansion(Code):
+    def __init__(self, summary: Code, details: Code):
+        self.summary = summary
+        self.details = details
+    def code(self) -> str:
+        return guarantee_non_empty_ends_with_new_line(self.summary.code) + \
+            guarantee_non_empty_ends_with_new_line(self.details.code)

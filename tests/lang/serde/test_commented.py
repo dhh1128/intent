@@ -54,7 +54,7 @@ def test_cc_values_with_post():
                         assert cv.post == "#b"
                         assert cv.above == above
                         assert str(cv) == "a"
-                        assert cv.text == above + line
+                        assert cv.code == above + line
 
 def test_cc_values_without_post():
     # Try parsing with and without comments above
@@ -82,7 +82,7 @@ def test_cc_values_without_post():
                         assert cv.post == ""
                         assert cv.above == above
                         assert str(cv) == "a"
-                        assert cv.text == above + line
+                        assert cv.code == above + line
 
 def test_cc_dictkey():
     # Try parsing with and without comments above
@@ -106,7 +106,7 @@ def test_cc_dictkey():
                     assert cv.post == ""
                     assert cv.above == above
                     assert str(cv) == "a"
-                    assert cv.text == above + line[:-1] # space after colon isn't considered part of the chunk
+                    assert cv.code == above + line[:-1] # space after colon isn't considered part of the chunk
 
 def test_cc_last_item():
     for above in ["abc", "#comment above\n", "#comment above\n  # comment above\n  "]:
@@ -118,7 +118,7 @@ def test_cc_last_item():
         assert cv.post == ""
         assert cv.above == above
         assert str(cv) == ""
-        assert cv.text == above
+        assert cv.code == above
 
 LIST_WITH_MID_COMMENT = [CommentedChunk.from_line(CCMode.LIST_VALUE, item) for item in ["a", "'def' #comment", "#pure comment", "content", "  indented content"]]
 LIST_STARTS_WITH_COMMENT = sorted(LIST_WITH_MID_COMMENT)
@@ -132,11 +132,11 @@ def test_cl_sort():
     assert_order(LIST_STARTS_WITH_COMMENT, "#pure comment", "a", "content", "'def' #comment", "  indented content")
     assert_order(LIST_ENDS_WITH_COMMENT, "  indented content", "'def' #comment", "content", "a", "#pure comment")
 
-INDENTED_LIST = [CommentedChunk.from_line(CCMode.LIST_VALUE, '  ' + item.text) for item in LIST_WITH_MID_COMMENT]
+INDENTED_LIST = [CommentedChunk.from_line(CCMode.LIST_VALUE, '  ' + item.code) for item in LIST_WITH_MID_COMMENT]
 CL_VARIANTS = [LIST_WITH_MID_COMMENT, LIST_STARTS_WITH_COMMENT, LIST_ENDS_WITH_COMMENT, INDENTED_LIST]
 
 def test_commented_list_as_str():
     assert str(LIST_WITH_MID_COMMENT) == '[a, def, , content, indented content]'
 
 def test_commented_list_as_text():
-    assert CommentedList(LIST_WITH_MID_COMMENT).text == "a\n'def' #comment\n#pure comment\ncontent\n  indented content\n"
+    assert CommentedList(LIST_WITH_MID_COMMENT).code == "a\n'def' #comment\n#pure comment\ncontent\n  indented content\n"
