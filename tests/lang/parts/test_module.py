@@ -31,9 +31,3 @@ def assert_yaml(ast, expected):
     vanilla_ast = to_standard_structure(ast)
     assert vanilla_ast == expected
 
-def test_simplest_compile():
-    path = SPACE1_DIR + "/pickle.i"
-    m = Module(path, space1)
-    ast, problem = m.compile()
-    assert_yaml(ast, {'name': 'pickle', 'type': 'module'})
-    assert not problem

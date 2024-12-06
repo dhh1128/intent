@@ -14,8 +14,6 @@ setup(
     version=__version__,
     packages=find_packages(),
     install_requires=[
-        'ruamel.yaml~=0.18.6',
-        'ruamel.yaml.clib~=0.2.12',
         'pathspec~=0.12.1',
         'rich~=13.9.4',
         'rich-argparse~=1.6.0'
