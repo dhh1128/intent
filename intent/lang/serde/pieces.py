@@ -1,20 +1,28 @@
 import ast
-from enum import Enum
-from typing import NamedTuple
 import warnings
 import re
 
-from .code import Code
+from abc import ABC, abstractmethod
+from enum import Enum
+from typing import NamedTuple
 
 INVALID_ESC_SEQ_PAT = re.compile(r"invalid escape sequence [\"']\\.[\"']")
 
 __all__ = ["Chunk", "List", "Dict"]
 
-def find_first_non_space_char(s):
-    for i, c in enumerate(s):
+class Code(ABC):
+    """A construct that can be converted to code."""
+    @property
+    @abstractmethod
+    def code(self) -> str:
+        """Return this construct and all its surrounding text, as it appears in code."""
+        pass
+
+def first_non_space_char(s, offset=0):
+    for i, c in enumerate(s, offset):
         if c != " ":
             return i
-    return -1
+    return 0
 
 def safe_literal_eval(s):
     """
@@ -53,17 +61,17 @@ class FirstTwoTokensTuple(NamedTuple):
     end_of_first_text: int
 
 def first_two_tokens(line) -> FirstTwoTokensTuple:
-    end_of_indent = find_first_non_space_char(line)
-    c = line[end_of_indent]
-    # Figure out where to start looking for comment. If we have a quoted value,
-    # skip to the end quote. Otherwise, begin looking right where we are.
-    if c in '\'"':
-        end_of_first_text = line.find(c, end_of_indent + 1)
-        if end_of_first_text == -1:
-            raise ValueError("No closing quote.")
-        end_of_first_text += 1
-    else:
-        end_of_first_text = end_of_indent
+    end_of_indent = first_non_space_char(line)
+    end_of_first_text = end_of_indent
+    if end_of_indent < len(line):
+        c = line[end_of_indent]
+        # Figure out where to start looking for comment. If we have a quoted value,
+        # skip to the end quote. Otherwise, begin looking right where we are.
+        if c in '\'"':
+            end_of_first_text = line.find(c, end_of_indent + 1)
+            if end_of_first_text == -1:
+                raise ValueError("No closing quote.")
+            end_of_first_text += 1
     return FirstTwoTokensTuple(end_of_indent, end_of_first_text)
 
 class Chunk(Code):
@@ -156,7 +164,8 @@ class Chunk(Code):
                         raise ValueError(f"With only above, mode must be {Chunk.Mode.TAIL.name}.")
             else:
                 if not chunk and not pre and not post:
-                    raise ValueError("Can't be empty of all content.")
+                    if mode != Chunk.Mode.DICT_VALUE:
+                        raise ValueError("Can't be empty of all content.")
             if post:
                 if divider is None: # instead of empty string...
                     raise ValueError("Can't have post without divider.")
@@ -305,11 +314,3 @@ class Dict(Code, dict):
         txt = "\n".join(lines)
         txt = guarantee_non_empty_ends_with_new_line(txt)
         return txt
-    
-class Expansion(Code):
-    def __init__(self, summary: Code, details: Code):
-        self.summary = summary
-        self.details = details
-    def code(self) -> str:
-        return guarantee_non_empty_ends_with_new_line(self.summary.code) + \
-            guarantee_non_empty_ends_with_new_line(self.details.code)

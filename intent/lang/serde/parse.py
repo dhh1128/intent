@@ -2,8 +2,7 @@ from abc import ABC, abstractmethod
 from enum import Enum
 from typing import NamedTuple
 
-from .code import Code
-from .pieces import Dict, List, Chunk, Expansion
+from .pieces import Code, Dict, List, Chunk, first_two_tokens
 
 __all__ = ["load", "dump", "Value"]
 
@@ -61,19 +60,18 @@ class ParsePoint(NamedTuple):
     line_num: int = 1
     indent: int = 0
     above: str = ''
-    def advance(self, start: int, line_num: int, above: str = '') -> 'ParsePoint':
-        return ParsePoint(self.data, start, line_num, self.indent, above)
+    def delta(self, start: int = None, line_num: int = None, indent: int = None, above: str = None) -> 'ParsePoint':
+        return ParsePoint(self.data, 
+                          self.start if start is None else start,
+                          self.line_num if line_num is None else line_num, 
+                          self.indent if indent is None else indent, 
+                          self.above if above is None else above)
 
 class ParseResult(NamedTuple):
     code: Code
     point: ParsePoint
 
 class Parser(ABC):
-    parent: 'Parser'
-
-    def __init__(self, parent: 'Parser' = None):
-        self.parent = parent
-
     @abstractmethod
     def parse(self, start_at: ParsePoint) -> ParseResult:
         pass
@@ -121,22 +119,21 @@ class UnknownContainerParser(Parser):
         data = start_at.data
 
         start_of_line, end_of_indent, _, line_num, above = skip_above(
-            start_at.advance(start_of_line, line_num))
+            start_at.delta(start_of_line, line_num))
         this_indent = end_of_indent - start_of_line
         if this_indent == start_at.indent:
-            handoff_at = start_at.advance(start_of_line, line_num,above)
-            first_char = data[end_of_indent]
-            if first_char == '-':
-                handoff_to = ListParser(self)
+            clip = data[end_of_indent:end_of_indent + 2]
+            if clip in ['-', '- ', '-\n', '-\r']:
+                handoff_to = ListParser()
             else:
-                handoff_to = DictParser(self)
-            code, resume_at = handoff_to.parse(handoff_at)
+                handoff_to = DictParser()
+            code, resume_at = handoff_to.parse(start_at)
             return code, resume_at
         elif this_indent < start_at.indent:
             # We found something other than a comment that is less indented than us,
             # so we're done parsing.
             code = Chunk.from_tail(above)
-            resume_at = start_at.advance(start_of_line, line_num, above)
+            resume_at = start_at.delta(start_of_line, line_num, above)
             return code, resume_at
         else:
             raise ValueError(f"Premature indent on line {line_num}.")
@@ -158,44 +155,44 @@ class DictParser(Parser):
 
         while start_of_line < eof:
             start_of_line, end_of_indent, end_of_line, line_num, above = skip_above(
-                start_at.advance(start_of_line, line_num))
+                start_at.delta(start_of_line, line_num))
             first_char = data[end_of_indent]
-            if first_char == '-':
-                raise ValueError(f"Expected key: value instead of list item on line {line_num}.")
-            else:
-                this_indent = end_of_indent - start_of_line
-                if this_indent == start_at.indent:
-                    line = data[start_of_line:end_of_line]
-                    first_char = line[0]
-                    colon = find_char_in_escaped(line, ':') if first_char in '\'"' else line.find(":")
-                    if colon == -1:
-                        raise ValueError(f"No key: value on line {line_num}.")
-                    key = Chunk.from_dictkey(line[:colon+1], above)
-                    above = ''
-                    value = Chunk.from_dictvalue(line[colon + 1:])
-                    result[key] = value
-                    prev_value = value
-                    prev_key = key
-                elif this_indent == start_at.indent + 2:
-                    if prev_value is None:
-                        raise ValueError(f"Premature indent on line {line_num}. Expected key: value.")
-                    nest_at = ParsePoint(data, start_of_line, line_num, this_indent, above)
-                    above = ''
-                    nest_to = UnknownContainerParser(self)
-                    details, resume_at = nest_to.parse(nest_at)
-                    expansion = Expansion(prev_value, details)
-                    result[prev_key] = expansion
-                    _, start_of_line, line_num, _, above = resume_at
-                elif this_indent < start_at.indent:
-                    if above:
-                        result[None] = Chunk.from_tail(above)
-                    resume_at = ParsePoint(data, start_of_line, line_num, this_indent)
-                    return result, resume_at
-                else: #this_indent > start_at.indent but not 2
-                    assert not "In theory, this should have been caught in raise_on_bad_intent"
+            this_indent = end_of_indent - start_of_line
+            if this_indent == start_at.indent:
+                if first_char == '-':
+                    raise ValueError(f"Expected key: value instead of list item on line {line_num}.")
+                line = data[start_of_line:end_of_line]
+                colon = find_char_in_escaped(line, ':') if first_char in '\'"' else line.find(":")
+                if colon == -1:
+                    raise ValueError(f"No key: value on line {line_num}.")
+                key = Chunk.from_dictkey(line[:colon+1], above)
+                above = ''
+                value = Chunk.from_dictvalue(line[colon + 1:])
+                result[key] = value
+                prev_value = value
+                prev_key = key
+            elif this_indent == start_at.indent + 2:
+                if prev_value is None:
+                    raise ValueError(f"Premature indent on line {line_num}. Expected key: value.")
+                nest_at = ParsePoint(data, start_of_line, line_num, this_indent, above)
+                above = ''
+                nest_to = UnknownContainerParser()
+                details, resume_at = nest_to.parse(nest_at)
+                # Reinterpret the previous value as trailing text after key rather than a value.
+                prev_key.post += str(prev_value)
+                result[prev_key] = details
+                _, start_of_line, line_num, _, above = resume_at
+                continue
+            elif this_indent < start_at.indent:
+                if above:
+                    result[None] = Chunk.from_tail(above)
+                resume_at = ParsePoint(data, start_of_line, line_num, this_indent)
+                return result, resume_at
+            else: #this_indent > start_at.indent but not 2
+                assert not "In theory, this should have been caught in raise_on_bad_intent"
             start_of_line = skip_eol(data, end_of_line, eof)
             line_num += 1
-        return result, start_at.advance(start_of_line, line_num, above)
+        return result, start_at.delta(start_of_line, line_num, above)
 
 class ListParser:
     def parse(self, start_at: ParsePoint) -> ParseResult:
@@ -211,37 +208,44 @@ class ListParser:
         result: List = List()
 
         while start_of_line < eof:
-            start_of_line, end_of_indent, line_num, above = skip_above(
-                start_at.advance(start_of_line, line_num))
+            start_of_line, end_of_indent, end_of_line, line_num, above = skip_above(
+                start_at.delta(start_of_line, line_num))
             this_indent = end_of_indent - start_of_line
             if this_indent == start_at.indent:
-                first_char = data[end_of_indent]
-                if first_char == '-':
-                    value = Chunk.from_listvalue(data[start_of_line + 1:end_of_line])
-                    result.append(value)
+                line = data[end_of_indent:end_of_line]
+                handoff = False
+                if line == '-':
+                    end_of_indent = start_of_line + 1
+                    handoff = True
+                elif line.startswith('- '):
+                    line = line[2:]
+                    _, end_of_first_text = first_two_tokens(line)
+                    if line.find(':', end_of_first_text) != -1:
+                        end_of_indent = start_of_line + 2
+                        handoff = True
                 else:
                     raise ValueError(f"Expected list item on line {line_num}.")
-            elif this_indent == start_at.indent + 2:
-                if len(result) == 0:
-                    raise ValueError(f"Premature indent on line {line_num}. Expected list item.")
-                nest_at = ParsePoint(data, start_of_line, line_num, this_indent, above)
-                above = ''
-                nest_to = UnknownContainerParser(self)
-                details, resume_at = nest_to.parse(nest_at)
-                prev_value = result.pop()
-                expansion = Expansion(prev_value, details)
-                result.append(expansion)
-                _, start_of_line, line_num, _, above = resume_at
+                if handoff:
+                    handoff_at = start_at.delta(end_of_indent, line_num, above)
+                    above = ''
+                    handoff_at.indent = this_indent + 2
+                    handoff_to = DictParser()
+                    value, resume_at = handoff_to.parse(handoff_at)
+                    _, start_of_line, line_num, _, above = resume_at
+                    continue
+                else:
+                    value = Chunk.from_listvalue(line)
+                    result.append(value)
             elif this_indent < start_at.indent:
                 if above:
                     result[None] = Chunk.from_tail(above)
                 resume_at = ParsePoint(data, start_of_line, line_num, this_indent)
                 return result, resume_at
-            else: #this_indent > start_at.indent but not 2
+            else: #this_indent > start_at.indent
                 assert not "In theory, this should have been caught in raise_on_bad_intent"
             start_of_line = skip_eol(data, end_of_line, eof)
             line_num += 1
-        return result, start_at.advance(start_of_line, line_num, above)
+        return result, start_at.delta(start_of_line, line_num, above)
 
 def load(data: str) -> dict:
     parser = DictParser()
