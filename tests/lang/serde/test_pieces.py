@@ -4,8 +4,6 @@ from intent.lang.serde.pieces import *
 def test_chunk_preconditions():
     with pytest.raises(ValueError, match="mode"):
          Chunk(-25)
-    with pytest.raises(ValueError, match="empty"):
-         Chunk(Chunk.Mode.TAIL)
     with pytest.raises(ValueError, match="only above.*TAIL"):
          Chunk(Chunk.Mode.LIST_VALUE, above="abc")
     with pytest.raises(ValueError, match="DICT_KEY.*:"):
@@ -18,6 +16,11 @@ def test_chunk_preconditions():
          Chunk(Chunk.Mode.LIST_VALUE, chunk="x", post="abc")
     with pytest.raises(ValueError, match="LIST_VALUE.*divider"):
          Chunk(Chunk.Mode.DICT_VALUE, above="something", chunk="x", divider="abc")
+
+def test_empty_chunk():
+    assert Chunk(Chunk.Mode.TAIL).is_empty
+    assert not Chunk(Chunk.Mode.TAIL, above="abc").is_empty
+
 
 def adjust_expected_for_quotes(pre, chunk, divider):
     e_pre = pre

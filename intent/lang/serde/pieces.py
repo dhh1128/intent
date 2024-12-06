@@ -162,10 +162,6 @@ class Chunk(Code):
                 if not chunk and not pre and not post:
                     if mode != Chunk.Mode.TAIL:
                         raise ValueError(f"With only above, mode must be {Chunk.Mode.TAIL.name}.")
-            else:
-                if not chunk and not pre and not post:
-                    if mode != Chunk.Mode.DICT_VALUE:
-                        raise ValueError("Can't be empty of all content.")
             if post:
                 if divider is None: # instead of empty string...
                     raise ValueError("Can't have post without divider.")
@@ -206,6 +202,12 @@ class Chunk(Code):
     def quote_char(self):
         """Returns the quote character encompassing the chunk, if any."""
         return self.pre[-1] if self.pre[-1] in '\'"' else None
+
+    @property
+    def is_empty(self):
+        if self.chunk or self.above or self.pre or self.divider or self.post or self.interpreted_chunk:
+            return False
+        return True
 
     @staticmethod
     def from_dictkey(line: str, above: str = ""):

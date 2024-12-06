@@ -2,9 +2,11 @@ from abc import ABC, abstractmethod
 from enum import Enum
 from typing import NamedTuple
 
-from .pieces import Code, Dict, List, Chunk, first_two_tokens
+from .pieces import Code, Dict, List, Chunk, first_two_tokens, first_non_space_char
 
 __all__ = ["load", "dump", "Value"]
+
+VALID_LIST_ITEM_BULLETS = ['-', '- ', '-\n', '-\r']
 
 def end_of_indent(data: str, i: int, end: int) -> tuple:
     while i < end:
@@ -123,7 +125,7 @@ class UnknownContainerParser(Parser):
         this_indent = end_of_indent - start_of_line
         if this_indent == start_at.indent:
             clip = data[end_of_indent:end_of_indent + 2]
-            if clip in ['-', '- ', '-\n', '-\r']:
+            if clip in VALID_LIST_ITEM_BULLETS:
                 handoff_to = ListParser()
             else:
                 handoff_to = DictParser()
@@ -152,16 +154,45 @@ class DictParser(Parser):
         result: Dict = Dict()
         prev_key: Chunk = None
         prev_value: Chunk = None
+        first_line = True
 
         while start_of_line < eof:
             start_of_line, end_of_indent, end_of_line, line_num, above = skip_above(
                 start_at.delta(start_of_line, line_num))
-            first_char = data[end_of_indent]
             this_indent = end_of_indent - start_of_line
+            first_char = data[end_of_indent]
+            line = None
+            
+            # DictParser normally consumes only lines that begin with as many spaces as its
+            # indent. However, its first line requires special handling because a DictParser
+            # might have be invoked by a ListParser that saw a list item that it determined
+            # was a dictionary:
+            #
+            #   - key1:          <-------- a line like this
+            #     key2: value
+            #
+            # In such a case, the first line that this parser encounters will begin with '-'
+            # at the start, which we need to ignore. If we detect this condition, pretend
+            # that we saw a normally indented line.
+            if first_line:
+                first_line = False
+                # Did we detect an outdent (indent is 2 smaller than it should be)?
+                if this_indent == start_at.indent - 2:
+                    if data[end_of_indent:end_of_indent+2] in VALID_LIST_ITEM_BULLETS:
+                        # The number of spaces after "-" is irrelevant, even though
+                        # it should be one.
+                        end_of_indent = first_non_space_char(data, end_of_indent + 2)
+                        first_char = data[end_of_indent]
+                        if end_of_indent > end_of_line: end_of_line = end_of_indent
+                        # Treat us as normally indented despite the list item bullet.
+                        this_indent = start_at.indent
+                        line = ' '*this_indent + data[end_of_indent:end_of_line]
+
             if this_indent == start_at.indent:
                 if first_char == '-':
                     raise ValueError(f"Expected key: value instead of list item on line {line_num}.")
-                line = data[start_of_line:end_of_line]
+                if line is None: # almost always true, except with weird first lines
+                    line = data[start_of_line:end_of_line]
                 colon = find_char_in_escaped(line, ':') if first_char in '\'"' else line.find(":")
                 if colon == -1:
                     raise ValueError(f"No key: value on line {line_num}.")
@@ -213,29 +244,29 @@ class ListParser:
             this_indent = end_of_indent - start_of_line
             if this_indent == start_at.indent:
                 line = data[end_of_indent:end_of_line]
-                handoff = False
+                handoff_to = None
                 if line == '-':
-                    end_of_indent = start_of_line + 1
-                    handoff = True
+                    line_num += 1
+                    start_of_line = skip_eol(data, end_of_line, eof)
+                    handoff_to = UnknownContainerParser()
                 elif line.startswith('- '):
                     line = line[2:]
                     _, end_of_first_text = first_two_tokens(line)
                     if line.find(':', end_of_first_text) != -1:
-                        end_of_indent = start_of_line + 2
-                        handoff = True
+                        handoff_to = DictParser()
                 else:
                     raise ValueError(f"Expected list item on line {line_num}.")
-                if handoff:
-                    handoff_at = start_at.delta(end_of_indent, line_num, above)
-                    above = ''
-                    handoff_at.indent = this_indent + 2
-                    handoff_to = DictParser()
-                    value, resume_at = handoff_to.parse(handoff_at)
-                    _, start_of_line, line_num, _, above = resume_at
-                    continue
-                else:
+                if not handoff_to:
                     value = Chunk.from_listvalue(line)
                     result.append(value)
+                else:
+                    new_indent = this_indent + 2
+                    handoff_at = start_at.delta(start=start_of_line, line_num=line_num, indent=new_indent, above=above)
+                    above = ''
+                    value, resume_at = handoff_to.parse(handoff_at)
+                    result.append(value)
+                    _, start_of_line, line_num, _, above = resume_at
+                    continue
             elif this_indent < start_at.indent:
                 if above:
                     result[None] = Chunk.from_tail(above)
