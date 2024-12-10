@@ -1,8 +1,6 @@
 import os
 import weakref
 
-import ruamel.yaml as yaml
-
 from .fs import canonical_path
 
 class Module:
@@ -27,6 +25,5 @@ class Module:
         return s.abs_path_to_rel(self.path)[:-2] if s else None
     
     def compile(self):
-        ast = yaml.YAML(typ='rt')
-        ast.load(self.path)
+        ast = {}
         return ast, None

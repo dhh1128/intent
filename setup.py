@@ -16,7 +16,8 @@ setup(
     install_requires=[
         'pathspec~=0.12.1',
         'rich~=13.9.4',
-        'rich-argparse~=1.6.0'
+        'rich-argparse~=1.6.0',
+        'python-dateutil~=2.9.0',
     ],
     entry_points={
         'console_scripts': [

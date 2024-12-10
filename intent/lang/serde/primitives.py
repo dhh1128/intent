@@ -91,4 +91,10 @@ def serialize_float(n, base: int=10) -> str:
     else:
         return str(n)
 
-
+DATE_PAT = re.compile(r'''^
+\d{4}-\d{2}-\d{2}               # Date (YYYY-MM-DD)
+(?:[Tt ]\d{2}:\d{2}:\d{2}       # Time (HH:MM:SS)
+(?:\.\d+)?                      # Optional fractional seconds (.sss)
+(?:Z|[+-]\d{2}:\d{2})?)?        # Optional timezone (Z or ±HH:MM)
+$
+''')
