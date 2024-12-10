@@ -43,3 +43,18 @@ def test_int():
                         assert is_int(txt)
                         assert deserialize_int(txt) == eval(txt.replace("_", ""))
 
+def test_float():
+    for value in ["3.14159", "3.14159e301", ".nan", "-.inf", '+.inf', '.inf', '0.0', '0.', '.0', '0e0', '0e+0', '0e-0', '0.0e0', '0.0e+0', '0.0e-0']:
+        assert is_float(value)
+        if value == ".nan":
+            # NaN is not equal to itself
+            assert deserialize_float(value) != float('nan')
+        elif '.inf' in value:
+            assert deserialize_float(value) == float(value.replace('.', ''))
+        else:
+            assert deserialize_float(value) == float(value)
+    for value in [".infinity", "3.1g7", "3.1e500"]:
+        assert not is_float(value)
+        with pytest.raises(ValueError):
+            deserialize_float(value)
+

@@ -1,3 +1,4 @@
+import math
 import re
 
 BOOL_PAT = re.compile(r"^([tT]rue|[fF]alse|[oO]n|[oO]ff|[yY]es|[nN]o|TRUE|FALSE|ON|OFF|YES|NO)$")
@@ -56,4 +57,38 @@ def serialize_int(n, base: int=10) -> str:
     if base == 2: return f"0b{n:b}"
     if base == 8: return f"0o{n:o}"
     raise ValueError(f"Invalid base: {base}")
+
+FLOATING_POINT_PAT = re.compile('^([-+]?(?:[0-9]*\.[0-9]+|[0-9]+\.?)(?:[eE][-+]?([0-9]+))?|[-+]?\.inf|\.nan)$')
+
+def is_float(txt) -> bool:
+    m = FLOATING_POINT_PAT.match(txt)
+    if m: 
+        return True if m.group(2) is None or int(m.group(2)) <= 308 else False
+    return False
+
+def deserialize_float(txt: str):
+    m = FLOATING_POINT_PAT.match(txt)
+    if not m: raise ValueError(f"Invalid float value: {txt}")
+    if '.inf' in txt:
+        return float('inf') if txt[0] != '-' else float('-inf')
+    elif '.nan' in txt:
+        return float('nan')
+    else:
+        exponent = m.group(2)
+        if exponent:
+            if int(exponent) <= 308:
+                return float(txt)
+            else:
+                raise ValueError(f"Float value overflows: {txt}")
+        else:
+            return float(txt)
+
+def serialize_float(n, base: int=10) -> str:
+    if math.isinf(n): 
+        return "-.inf" if n < 0 else ".inf"
+    elif math.nan(n):
+        return ".nan"
+    else:
+        return str(n)
+
 
