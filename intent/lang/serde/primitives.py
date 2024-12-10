@@ -1,3 +1,5 @@
+import datetime
+import dateutil
 import math
 import re
 
@@ -90,11 +92,16 @@ def serialize_float(n, base: int=10) -> str:
         return ".nan"
     else:
         return str(n)
+    
+def is_date(txt) -> bool:
+    try:
+        dateutil.parser.isoparse(txt)
+        return True
+    except ValueError:
+        return False
+    
+def deserialize_date(txt: str):
+    return dateutil.parser.isoparse(txt)
 
-DATE_PAT = re.compile(r'''^
-\d{4}-\d{2}-\d{2}               # Date (YYYY-MM-DD)
-(?:[Tt ]\d{2}:\d{2}:\d{2}       # Time (HH:MM:SS)
-(?:\.\d+)?                      # Optional fractional seconds (.sss)
-(?:Z|[+-]\d{2}:\d{2})?)?        # Optional timezone (Z or ±HH:MM)
-$
-''')
+def serialize_date(date) -> str:
+    return date.isoformat()

@@ -1,3 +1,4 @@
+import datetime
 import pytest
 import random
 
@@ -57,4 +58,22 @@ def test_float():
         assert not is_float(value)
         with pytest.raises(ValueError):
             deserialize_float(value)
+
+def test_date():
+    for txt, value in [
+        ("2000-02-29", datetime.datetime(2000, 2, 29, 0, 0, 0, 0)),
+        ("2024-12-10T11:14:53.29348", datetime.datetime(2024, 12, 10, 11, 14, 53, 293480)),
+        ("0001-01-01", datetime.datetime(1, 1, 1, 0, 0, 0, 0)),
+        ]:
+        assert is_date(txt)
+        assert deserialize_date(txt) == value
+    for value in [
+        "2000-02-30",
+        "2024-13-10T11:14:53.29348",
+        "0000-01-01",
+        "-0600-04-25 18:06:23",
+        ]:
+        assert not is_date(value)
+        with pytest.raises(ValueError):
+            deserialize_date(value)
 
